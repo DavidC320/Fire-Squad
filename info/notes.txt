@@ -1,0 +1,429 @@
+1/19/2022
+This is the second interation of this game idea...
+Fire squid is an arcade shooter where the player uses the mouse to aim, and wsad and arrows to move.
+they need to destroy enemy ships to gain score and credits to spend in the end of round store.
+a round ends if the player survives 2 minutes
+After 10 rounds (or 5 on master or evil), the player must fight a boss.
+the player has 4 minutes to defeat the boss or else it's an instant game over.
+the player can also get a game over if they run out of health or lives.
+
+Progress:
+    Completed:
+        visualized the origin point for enemy spawns and star particles.
+        created the retical for aiming.
+    
+In progress:
+    Enemy movement in regard to world space.
+        if you go left then the enemy should go right but stop when the origin point hits the limit
+    what I need
+        when the origin point hits the limit, the game needs something to stop the enemy from going any
+        farther when the player moves.
+    Ideas
+        bools
+            if_left_limit
+            if_right_limit
+            if_up_limit
+            if_down_limit
+                this would create too many bools
+            if_lock
+                this can be an answer
+                if limit not reached
+                    action
+                else:
+                    if_lock = True
+                then the enemy will check if the origin is locked and nullify player input
+                    if not is_lock:
+                        action
+                Conclusion:
+                    Due to the if_lock bool not contain any usefully information like what side is locked, makes
+                    this solution invalid
+        list
+            lock_config [False, False, False, False] // [left, top, right, bottom]
+        Conclusion:
+            works pretty good, so I can use this to create locks.
+
+1/20/2022
+I didn't do much today because I wanted to play some games
+I also got two new 3ds games, Minecraft and Battle Miner Z
+with just a few minutes, I've completed the locks for the enemy.
+ 
+Progress:
+    Completed:
+        Enemy player_input locks.
+
+Next part:
+    create collision with the enemy and curser
+
+1/21/2022
+So that is what I get for helping you Mr.webb... a ####### "Thanks for trying" ###### I SHOULD'VE ####### LEFT A LONG TIME AGO BECAUSE THAT WAS THE FIRST CLASS WHERE MY ASS WAS SLAPPED. THE AMOUNT OF ####### DISRESPECT
+JUST A FEW WORDS IS CRAZY BUT I KNOW WHY IT WASN'T WORKING. IT WAS BECAUSE YOU DIDN'T ####### USE YOUR SETUP_GAME METHOD AND YOU WERE CALLING START FORM THE CLASS INSTEAD OF THE VARIABLE. YOU KNOW WHAT I'M NOTE
+EVER GOING TO HELP YOU WITH CODE AS MUCH AS POSSIBLE.
+
+anyway, I played minecraft on my 3DS and a lot of Battle Miner Z on the bus and home.
+
+Progress:
+    Completed:
+        enemy collision with the curser
+In progress:
+    enemy movement
+    Problems:
+        due to the speed variable, the enemy is flying past the target location.
+        Ideas:
+            <>: This could help with the problem, I need to check if every axis is within an invisible span
+                Enemy_x > target_x - speed and Enemy_x < target_x + speed
+            Conclusion:
+                It worked, but now I realised that there is another problem, but I'm going to take a break.
+        
+        The enemy goes to far away when on high speed because of direction.
+            Ideas:
+            get rid of direction and reformat the method. 
+            Conclusion:
+                This fixed the problem, and now I can just make it where the target positions are effected by movement
+
+1/22/2022
+I've calmed down since yesterday, but I'm full of spite.
+today I want to continue on the enemy creating the space elements to the game.
+    1. create the z variable to be used in calculating the distance from the player and the scale factor. later... ok I'm back
+
+Progress:
+    Completed:
+        enemy z value.
+In progress:
+    Nothing at this time.
+
+The next thing I want to add is a check if the enemy is getting close to the player.
+    ideas:
+        So in order to make this work I'll have to strip the z_movement if z < max_z check and put it in the game loop.
+        the game will warn the player if the enemy is 90% to the max z value. to make sure if any enemy is at that mark, I'll make a for loop
+        that checks the z position and if any of them reach the mark then set display text warning to true.
+
+1/23/2022
+Today was a busy day, so I didn't get to do much coding today, so I need to work fast.
+
+Progress
+    warning message.
+
+I want to go home, but not at home. I need to reset back to the default preset. Every day deteriorates while my own mind terminates. Days don't end or they stop too soon. I want to cry but nowhere to cry to. Every
+second I live is just another sand added to the weight on my back I want to just let go. everyday bleeds into each other into a morbid atrocity making me lost.
+
+1/28/2022
+I finally got out of the death spiral... for now, but soon I will meet the face of anchors again.
+
+Progress:
+    different enemy types tests
+    fixed warning bug. when an enemy was killed, the warning message wouldn't go away.
+    created several new assets'
+        player model
+        gameplay gui
+        ship models
+In progress:
+    Star particles
+        star movement has already been figured out but the problem is finding a target position
+        Solutions:
+            I found a way to generate a random position on the circumference of a circle which is what I needed.
+            I also figured out how to make it work a bit.
+
+1/29/2022
+My body feels pretty weak for some reason... it's distracting. then again I don't move a lot, and I did clean the floor, but I've not felt this weak
+in years. maybe this is the pain she had, ugh. I need a placebo. I think I got something... haha
+
+Progress:
+    full implementation of the star particle system
+        it will also work as bullet, explosion, and other things I can't think of other things.
+
+In progress:
+    I want ot add menus for this game, but I really don't know how to.
+        Solutions:
+            besides watching videos about making menus. I will just write a sample of my idea fo the system in here
+            first thing I want the player to use is the start menu witch wll use the space left click button tio get to the next
+            screen
+            after pressing left mouse, I want to switch to a different screen where the player can select a difficulty level.
+            then the player gets into the game.
+            Once the player losses all their health I want the game to switch into a game overs state that can bring them back into
+            the game or to the menu.
+            So this will kind of look like this.
+            While Running
+                if not game:
+                    start_menu()
+                else:
+                    if playing:
+                        playing = game_stuff(difficulty)
+                    else:
+                        confi_menu = game_over()
+                        game = confi_menu[0]
+                        playing = confi_menu[1]
+
+2/2/2022
+I forgot to add yesterday's stuff. I'm currently reworking my code
+It's been a wild code. I was going to make a new abstract group class, but I will just make a function to reorganize the sprite group.
+
+progress:
+    Completed code reformation
+in progress:
+    Menu things
+    Game over screen
+    Enemy behavior
+    player bullet
+Problems:
+    Due to how enemies are rendered in pygame, I will need to reorganize all sprites inside the group.
+
+2/3/2022
+last night I modded my 3ds so it can do some fun stuff like custom themes, new applications, and some other things I
+don't know.
+
+Progress:
+    completed enemy dynamo renderer
+in progress:
+    Menus:  # tomarrows goal
+        main
+        start
+        game over  # in progress
+    Enemy behavior  # get started or finish it
+    player bullet
+
+2/4/2022
+I spent my whole day yesterday trying to get a psx emulator to work on my 3ds. I haven't used this to talk about making
+this game at all for a while, so I want to say what I plan on doing today. So today I want to complete all the menus
+for this game. I will need a main, start, and game over menu. I need to figure out how to check if the mouse is over
+a button for this to work. each text object will be attached to a different function.
+
+progress:
+    completion of the menu class and main menu class.
+
+in progress:
+    options menu
+    credits menu
+
+problems:
+    setting things up is difficult, I.E main menu class changes 3 variables and keeping track of them is hard with a
+    return function
+
+2/5/2022
+#### #### #### #### #### #### #### #### #### #################### ####### ########. I need to study tkinter for the
+surprise skill usa thing.
+Anyway, last night I got my 3ds to run psx games. Now I can play LSD Dream Emulator and I.Q. on the go without needing
+to bring a big xbox controller.
+Today I want to continue working on the menus for the game and reformat the game initializer code in game_start.py file
+
+Progress:
+    total overhaul on start_game method// now a part of a class
+    reformatted all current menus, so they can call for information from the new class with start_game.
+
+In progress:
+    Game over menu
+        The very thing that started this
+    Options menu
+        Because the video had it, and I will need it for those sedative eared pebbles in the class (I'm one of them).
+    Credits menu
+        To display my greatness (and several of the main contributors.)
+
+2/9/2022:
+It's been four days since I could code again...
+Today I had the skill usa competetion today and I couldn't finish the project in time. I was struggling with everything. the apps where not close
+to what I thought they would be and I failed. My competeter asked me if I finished the code, I said no and he rejoiced in happiness and said something close
+to thank god... I sat in the class room for a few minuests and then the teacher started speaking to me. I said that I belived in myself... he laughed.
+He laughed... and then started spewing lies to me. Clever, smart, and other lies that can't be backed up. I failed the only person that belived in
+me and made myself look like a fool. During the test their was cheering for us, by us I mean just my competeter... no one belives in me.
+I'm just another stupid programmer that got into the program from just pity. I wanted to prove myself, but I ###### it up and I know I am
+the teachers worst contestant. I would not have joined skills USA if i was not blinded by false sense of hope near the beggining of school.
+I am the fool who belived in himself... I'll now have to serve the price, Fractured low self-esteam, Diminished will, Smothered hope,
+and a desire to leave the program. Why should I stay... I should have left months ago... but I can not leave, I'm stuck.
+
+Today I want to create round timer and enemy behavior
+    the round timer will start a few seconds after the player enters the game then starts a counter to 1 minute before switching to end round
+    stuff.
+    though I want to work on firerate
+
+    Enemy behavior is also something I need to do.
+        get rid of Morphers for now
+        launchers will shoot missles at a random point
+        shooters will shoot bullets at the center point
+        chasers will go to the center point
+
+2/10/2022
+Today I was delt an ace by the draw and got a 100% on my history test.
+
+I want to create a round system that I develped from timer test where after a round 
+create fire rate thing
+develop enemy firing
+add music
+add sprites
+add sounds
+
+Completed:
+    created beta round timer in timertest
+    created enemy behavior
+Incomplete
+    Game round timer// unimplemented
+    Launcehr and shooter don't fire anything
+        I think the best way to make this work, is by creating a fire interval variable and last fired variable
+            for Launcehrs, they will need to have a target so the player knows where the missle is going.
+    implement music
+        I already have a handfull of music that I'll use. All midis, the best music format because I can use copyrigted music legaly
+        due to a technecality with creating a midi. Though I read it from google from Quora
+        https://www.quora.com/Are-downloaded-MIDI-files-copyright-free#:~:text=domain%20or%20not.-,The%20MIDI%20File%20is%20protected%20by%20a%20separate%20copyright%20because,a%20'public%20domain'%20song.
+    implement better sprites
+        this will take time to make since I'll need to set up everything for the sprites
+    implement sound effects
+        I hate this part, zapsplat is a terrible place to get sound effects... probly because I don't know how to use it.
+Problems:
+    Chaser enemy moves eredicly because the player affects the target location.
+        I will need ot make a check to not allow the player to affect the target location for chasers
+    Game over screen has cursor problem.
+        I'll need to look at it.
+
+2/12/2022
+I forgot to do notes yesterday...
+Anyway, Today I want to run some tests to see if I can use a certain method to delete enemies. I could also create limits for each enemy type:
+Also I need to figure out a good way to make enemy projectiles. should they be enemies or projectiles. Also, how should they spawn in...
+they could be based off of a enemy timer inside the enemy, and when it hits the timer, it can shoot. or  should they be based off of a timer
+inside the actual game class that spawns a bullet from a random enemy that's on the screen. Alot of options to choose.
+
+For the projectiles, I think I will use a diffent Group for this because I alraedy have the particle calss ready for this but I'll need To
+modify my enemy regroup funtion to be more mutable so it can be used by the projectile class.
+So, I'll make the random shoot funtion be craeted in the game class. I'll also proably need to create sepreate group class to store each enemy
+seperatly... no that's a bad idea because then I would be making several groups for no reason.
+
+I'll also need to make it where shooters and Launcehrs will fly away in a random direction then self.kill themsselves. the problem is
+if the enemy will turn into a ghost sprite and still count in the enemy group class.
+
+I think I have everything figured out.
+
+New enemy behavoir - Escape for rangers(shooters & launchers)
+    spawn time == time enemy created
+    attack length == 10 seconds unless round is over then isntantly in escape model
+
+New game behavior - ranger attacks (shooters & launchers)
+    ############################################################ scraped ############################################################
+    enemy firerate start == start if round
+    enemy firerate == 1000 * ((number if enemies / max amout of enemies) * 100) + 100 
+    if current time - enem firerate start >  enemy firerate then... uh oh this is bad
+        So because the enemy group incompeses the chaser enemy, I guess I'll need to make a seperate group for rangesrs... ugh
+        now I really need to modify the reorganization funtion. let me think
+        enemy fighter group
+        enemy ranger group
+        boss group <--- this was going to be here anyway.
+
+        reorganize method 
+        grab all fighters and regornise them
+        re-add all of the fighters back into their group but keep a seperate list of them to draw
+        grab all rangers and reorganize them
+        re-add all the rangers and keep a list of them
+        add both fighter and ranger lsits together and reorganize them then draw them... I'm going to vomit
+    ############################################################ scraped ############################################################
+    this is idea is scraped because the amount of things I would need to do to make this way work so I'll go for every individual enemy
+    timers.
+
+    for enemies
+        rangers can't fire from the start until tney reach their z_max or what I should have called it, Z_targ
+        once they reach the z_max, their state is chanfged to fighting
+
+        inside of the game class, I'll need to add a new funtion
+        for every enemy in the enemy group
+            if the enemy is a ranger then grab enemies state and check if it's fighting
+                if the enemy is fighiting then grab can fire value
+                    if the enemy can't fire then get the current time and set it as the start time
+                    else:
+                        current time - enemies' start time > enemy fire rate
+                        if that is true then create a bullet then set the enmies start time to current time
+
+    New enemy types:
+        missles
+            slower than a bullet. creates a retical that the missle will travel to when it hits the z_max, the the game will check if
+            it is inside the player bound box then damage the player if so.
+        bullets
+            faster than a ship, it's target position is the where the center screen is. will do the same check as the bulelt
+
+Progress:
+    gameover music
+    more game music
+    enemies:
+        created better enemy ship I.E points, damage, and timer things
+        added sprites for all avaliable ships
+        beginings of run away behavoir
+            self.kill() does work with no side effects.
+        
+    Enemy firing behavoir
+    full projectile implementation
+Inprogress:
+    player collision check ver 2
+        Due to projectile now being in the game. I need to create a way to make sure if the bullets can't hit the player if they aren't inside of a player collison box
+        This collision box only affects projectiles.
+        I will need to make a rectagle then place it smewhere in the middle of the screen.
+Problems:
+    the game lags due to size of chaser enemy// fixed
+        There is no easy way to fix this from my knowledge. so I jsut decreased the z_max in settings to a point where the chaser won't get too big.
+
+2/13/2022
+I have no thoughts at the moment.
+
+So today I want to make the player collison box. I could have done it a long time ago, but I didn't have any projectiles that would need to be acounted for.
+So the idea is to make the rectangle bassed off the size of bullets for the sides which has a max width of 24 * 6 wich is 144
+So the height will be sort of bassed off the eney targeting offsets which is targ_y = randrange(129, wn_height-74) but I'll need to change the offset for with 144 so it more like targ_y = randrange(129, wn_height-144)
+######################## Scrapped ########################
+129 + 144 = 273 total offset 500 - 273 = 227 player height
+122*2 = 244 total offset 500 - 244 = 256 player width
+######################## Scrapped ########################
+I looked at the actual window size and I figured out that they are acually
+width = 800
+height = 600
+I have no idea where I keep getting 500 from but I can use some of the calcuations from the scrapped part ot redo the size and stuff
+800 - 273 = 527 width
+600 - 244 = 356 height
+
+Then I need to place the rectangle from the topcenter at x = half of screen width and and the height will be 129 
+
+Progress:
+    Completed:
+    sound effects has been added
+    player collision box
+    timer and round text has been added
+Inprogress:
+    Nothing for now
+Problems:
+    player fire sound was overlapping because of the sound player being played more than necesary becasue of the enemies that where checked// fixed
+        I just needed to remove the sound player from the enemy check loop
+
+2/14/2020
+I couldn't present my game today because my stomach was in great pain and I couldn't relive my pain due to being in a rush to get back to the class room for a potental
+presentaion with my name on it. In the end, my stomach was unhappy, several failed attempts to relive the pain until I could actually relive it properly by relaxing.
+
+Since today was souposed to be my presentation. I decided to update the game to 4.0.0. 
+Change log
+The game now has a title
+all menues have been updated with star particles
+all particles have been been given a kill switch after 20 seconds have passed
+fixed the menu operation where WASD would not register as an input
+added several new tracks 
+redone the space background for the game
+
+update structure
+1st number
+	The current revision or major version
+		massive overhauls
+		important milestones I.E. entering a diffent stages alpha, beta, release
+2nd number
+	the number of big updates
+		added fetures
+		mideum range changes
+3rd number
+	the number of small updates
+		bug fixes
+		small featurs
+    
+3/9/2022
+I'm back for a bit to work on this game a bit more... a lot more. 
+
+To do list
+1. clean up the program so I can fimilirize myself to it again.
+2. make the difficulty ramp up for the game
+    1. fix the diffuclty in the game
+    2. create difficulty after beating a round
+3. create the credits system
+    1. make the enemies drop credits
+    2. make credits be depedent of internal and external difficulty 
+4. make the upgrade shop
+5. make boss incounters
+6. make cut scenes
+7. make the leader board
+8. make dead man difficulty

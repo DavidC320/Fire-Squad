@@ -1,0 +1,135 @@
+Base code from Clear Code's mario platformer video
+
+// Sprite credits //
+
+retical from Oglsdl
+    https://opengameart.org/content/aim
+
+// music credits //
+Bitmidi's
+
+Game music:
+    71075
+    celes2
+    Strange-Kind-Of-Woman
+    Sorcererss'-Assistant
+    Never-Will-I-Marry
+    Born-To-Be-Alive-1
+    Absolute - Dream Odyssey.mid
+    Bad_Religion_-_A_Walk.mid
+    Human3gm.mid
+
+Game over music:
+    73561_08
+    La-Cathedrale-Engloutie.mid
+    Never-Gonna-Give-You-Up-3.mid
+    Skies of Arcadia - Tension Theme.mid
+    zeal.mid
+
+Title music:
+    Lemon & Einar K - Anticipation (Original Mix).mid
+
+midiworld seems to be alright
+
+// sound effects //
+all sounds came Freesounds under creative commons 0.
+
+146730__leszek-szary__shoot.wav
+39031__wildweasel__dsglaun.wav
+512469__michael-grinnell__laser-shot.wav
+530486__rickplayer__metal-impact.mp3
+365641__furbyguy__8-bit-alarm.wav
+
+
+//code credits //
+
+1/19/2022
+
+A1 = Elias
+    https://stackoverflow.com/questions/23457410/pygame-mouse-movement/23457579
+
+A2 = unutbu
+    https://stackoverflow.com/questions/20002242/how-to-scale-images-to-screen-size-in-pygame
+
+1/21/2022
+
+B1 = Rabbid76
+    https://stackoverflow.com/questions/29640685/how-do-i-detect-collision-in-pygame
+
+B2 = sloth
+    https://stackoverflow.com/questions/10990137/pygame-mouse-clicking-detection
+
+B3 = code.Pylet
+    https://youtu.be/DVYDkHdsTIM
+
+1/23/2022
+C1 = Clear Code
+    https://youtu.be/AY9MnQ4x3zk
+
+1/28/2022
+D1 = Canva
+    https://www.canva.com/colors/color-meanings/yellow/
+
+D2 = Rapid Tables
+    https://www.rapidtables.com/web/color/purple-color.html
+
+D3 = w3schools
+    https://www.w3schools.com/python/ref_random_choices.asp 
+
+D4 = Delft Stack
+    https://www.delftstack.com/howto/python/list-without-brackets-python/#:~:text=The%20join()%20function%20takes,or%20w
+    hichever%20character%20we%20desire.
+
+D5 = Robᵩ
+    https://stackoverflow.com/questions/48358792/generating-random-points-on-the-circumference-of-a-circle-python
+
+2/1/2022
+E1 = CDcodes
+    https://youtu.be/a5JWrd7Y_14
+
+2/2/2022
+F1 = Programiz
+    https://www.programiz.com/python-programming/methods/list/sort
+
+F2 = Jan van der Vegt
+    https://stackoverflow.com/questions/37318637/python-how-to-sort-list-with-float-values
+
+F3  = Lulian Onofrei and Scott Stanford
+    https://stackoverflow.com/questions/1143671/how-to-sort-objects-by-multiple-keys
+
+2/3/2022
+G1 = enke
+    https://stackoverflow.com/questions/70809018/working-with-a-bunch-of-lists-within-a-larger-list-and-using-lambda-func
+
+G2 = Krunal
+    https://appdividend.com/2021/06/26/how-to-add-list-to-list-in-python/
+
+2/4/2022
+h1 = CDcodes
+    https://youtu.be/a5JWrd7Y_14
+
+h2 = CDcodes
+    https://youtu.be/bmRFi7-gy5Y
+
+2/9/2022
+I1 = Rabbid76
+    https://stackoverflow.com/questions/9961563/how-can-i-make-a-sprite-move-when-key-is-held-down
+
+I2 = kabr8 and Haz
+    https://stackoverflow.com/questions/16044229/how-to-get-keyboard-input-in-pygame
+
+2/11/2022
+J1 = sloth
+    https://stackoverflow.com/questions/58165738/how-can-i-select-a-song-from-a-list-using-pygame-mixer
+J2 = Rabbid76
+    https://stackoverflow.com/questions/65247656/how-do-i-change-the-volume-of-the-sound-or-music-in-pygame
+
+2/12/2022
+K1 = tech with tim
+    https://youtu.be/1aGuhUFwvXA
+
+k2 = clear code
+    https://youtu.be/1_H7InPMjaY
+
+K3 = buildwithpython
+    https://youtu.be/pcdB2s2y4Qc
