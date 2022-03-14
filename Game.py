@@ -149,6 +149,15 @@ class GamePlay:
             self.score_rect = self.health_surface.get_rect(center=(wn_width * .15, wn_height * .15))
             self.display_surface.blit(self.score_surface, self.score_rect)
 
+            # credits(money)
+            self.credits_surface = self.font.render(f'Credits:', True, 'Black')
+            self.credits_rect = self.health_surface.get_rect(center=(wn_width * .90, wn_height * .06))
+            self.display_surface.blit(self.credits_surface, self.credits_rect)
+
+            self.credits_surface = self.score_font.render(f'{self.credits}', True, 'Black')
+            self.credits_rect = self.health_surface.get_rect(center=(wn_width * .90, wn_height * .15))
+            self.display_surface.blit(self.credits_surface, self.credits_rect)
+
             # rounds
             self.round_surface = self.font.render(f"rounds: {self.rounds}", True, "Black")
             self.round_rect = self.round_surface.get_rect(midtop=(wn_width/2, 10))
@@ -190,12 +199,14 @@ class GamePlay:
                 if events.type == self.star_particle_timer:
                     star = Particle((self.space.spawn_x, self.space.spawn_y), .50, (0, 0), self.playerSpeed, "star", 0, pygame.time.get_ticks())
                     self.starParticles.add(star)
+                    star = Particle((self.space.spawn_x, self.space.spawn_y), .50, (0, 0), self.playerSpeed, "star", 0, pygame.time.get_ticks())
+                    self.starParticles.add(star)
 
                 if self.in_round:
                     if events.type == self.enemy_timer:
                         if len(self.enemyGroup) <= 199:
                             enemy_type = choices(enemy_name, weights=enemy_weight, k=1)  # taken from D3
-                            enemy = Enemy(*enemy_type, 0.05, (self.space.spawn_x, self.space.spawn_y), self.enemySpeed, self.current_time)
+                            enemy = Enemy(*enemy_type, 0.05, (self.space.spawn_x, self.space.spawn_y), self.enemySpeed, self.playerSpeed, self.current_time)
                             # taken from D4 // * symbol gets rid of the []
                             self.enemyGroup.add(enemy)
                             self.reorganize_group()
@@ -235,6 +246,8 @@ class GamePlay:
                                         enemy.health -= self.damage
                                         if enemy.health <= 0:
                                             self.score += enemy.score_points
+                                            if enemy.ship_type in enemy_name:
+                                                self.credits += enemy.credits
                                             enemy.kill()
                         self.can_fire = False  # turns off firing until the ship auto reloads
 
@@ -291,14 +304,14 @@ class GamePlay:
                                 if ship_type == "shooter":
                                     self.sound_player.bullet_sfx()
                                     spawn_posi = (enemy_ship.x, enemy_ship.y)
-                                    enemy = Enemy("bullet", 1, spawn_posi, self.enemySpeed, self.current_time)
+                                    enemy = Enemy("bullet", 1, spawn_posi, self.enemySpeed,self.playerSpeed, self.current_time)
                                     self.enemyGroup.add(enemy)
                                     self.reorganize_group()
 
                                 elif ship_type == "launcher":
                                     self.sound_player.missle_sfx()
                                     spawn_posi = (enemy_ship.x, enemy_ship.y)
-                                    enemy = Enemy("missle", 1, spawn_posi, self.enemySpeed, self.current_time)
+                                    enemy = Enemy("missle", 1, spawn_posi, self.enemySpeed,self.playerSpeed, self.current_time)
                                     self.enemyGroup.add(enemy)
                                     self.reorganize_group()
                             enemy_ship.last_fire = self.current_time

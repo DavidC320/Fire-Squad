@@ -26,6 +26,15 @@ Game over music:
     Skies of Arcadia - Tension Theme.mid
     zeal.mid
 
+Boss music:
+    Amunet Prime
+    Music: Amunet Prime by Shane Ivers - https://www.silvermansound.com
+    No changes
+
+    The True Final boss
+    Y♥M I ♥Y
+    Music: https://www.chosic.com/free-music/all/ 
+
 Title music:
     Lemon & Einar K - Anticipation (Original Mix).mid
 

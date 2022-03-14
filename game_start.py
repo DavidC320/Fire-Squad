@@ -3,8 +3,8 @@ from Settings import wn_height, wn_width
 from Game import GamePlay
 from Music import MusicCont
 from Menu import MainMenu, GameSelectMenu, GameOver
-# Fire Squad revised pre presitation
-# Version Beta 4.0.0
+# Fire Squad revised Post presitation
+# Version Beta 4.0.1
 # David Cruz
 
 

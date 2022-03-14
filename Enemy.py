@@ -6,23 +6,24 @@ from Settings import wn_width, wn_height, z_max, rangers
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, ship_type, z_value, spawn_pos, speed, spawn_time):
+    def __init__(self, ship_type, z_value, spawn_pos, enemy_speed, player_speed , spawn_time):
         super().__init__()
         # init settings
         self.ship_type = ship_type
-        self.speed = speed
+        self.p_speed = player_speed
+        self.e_speed = enemy_speed
         self.z = z_value  # 0.05
 
         # other variables
-        self.z_speed = .001 * self.speed
+        self.z_speed = .001 * self.e_speed
         self.state = "chasing"
         self.health = 1
+        self.moving = False
 
         ############################## spawn location ##############################
+
         self.x = spawn_pos[0]
         self.y = spawn_pos[1]
-
-        ################################ ship image ################################
 
         ################################ ship types ################################
 
@@ -35,6 +36,7 @@ class Enemy(pygame.sprite.Sprite):
             # varables
             self.damage = 1
             self.score_points = 150
+            self.credits = 10
 
         if self.ship_type == "launcher":
             self.ship_image = pygame.image.load("GFX\\enemy\\Launcher.png").convert_alpha()
@@ -45,7 +47,8 @@ class Enemy(pygame.sprite.Sprite):
             # varables
             self.damage = 1
             self.score_points = 250
-            self.speed = speed / 2
+            self.credits = 20
+            self.e_speed = self.e_speed / 2
             self.spawn_time = spawn_time
             self.can_fire = False
             self.last_fire = None
@@ -59,11 +62,13 @@ class Enemy(pygame.sprite.Sprite):
             # varables
             self.damage = 1
             self.score_points = 250
-            self.speed = speed / 2
+            self.credits = 20
+            self.e_speed = self.e_speed / 2
             self.spawn_time = spawn_time
             self.can_fire = False
             self.last_fire = None
-            
+
+        ################################ ship types ################################
         
         ############################### Projectiles ###############################
 
@@ -80,9 +85,9 @@ class Enemy(pygame.sprite.Sprite):
             self.damage = 1
             hypo = math.hypot(targ_x - self.x, targ_y - self.y)
             print(hypo/100)
-            self.speed = speed / (hypo/150)
-            print(self.speed)
-            self.z_speed = .003 * speed
+            self.e_speed = self.e_speed / (hypo/170)
+            print(self.e_speed)
+            self.z_speed = .003 * enemy_speed
 
         if self.ship_type == "missle":
             color = "Green"
@@ -98,9 +103,11 @@ class Enemy(pygame.sprite.Sprite):
             self.score_points = 100
             hypo = math.hypot(targ_x - self.x, targ_y - self.y)
             print(hypo/100)
-            self.speed = speed / (hypo/150)
-            print(self.speed)
-            self.z_speed = .0015 * speed
+            self.e_speed = self.e_speed / (hypo/170)
+            print(self.e_speed)
+            self.z_speed = .0015 * enemy_speed
+
+        ############################### Projectiles ###############################
 
         ############################ unused ship types ############################
 
@@ -108,10 +115,15 @@ class Enemy(pygame.sprite.Sprite):
             color = (196, 196, 196)  # taken from googles color picker // light grey
         if self.ship_type == "holder":
             color = (138, 43, 226)  # taken from D2 // blue violet
+        ############################ unused ship types ############################
+
+        ############################ Creates ship image ############################
 
         self.image_size = self.ship_image.get_size()
         self.image = pygame.transform.scale(self.ship_image, (self.image_size[0] * self.z, self.image_size[1] * self.z))
         self.rect = self.image.get_rect(center=(self.x, self.y))
+
+        ############################ Creates ship image ############################
 
         # Block of variables from B3
         # Target location
@@ -124,10 +136,8 @@ class Enemy(pygame.sprite.Sprite):
         self.dir_x = 0  # B3 equivalent - dx
         self.dir_y = 0  # B3 equivalent - dx
 
-        # Movement
-        self.moving = False
-
     def enemy_movement_cont(self, move_lock):
+        speed = self.p_speed
         locks = move_lock
         keys = pygame.key.get_pressed()
         up = (keys[pygame.K_UP] or keys[pygame.K_w])
@@ -136,24 +146,24 @@ class Enemy(pygame.sprite.Sprite):
         right = (keys[pygame.K_RIGHT] or keys[pygame.K_d])
 
         if not locks[1] and up:
-            self.y += self.speed
+            self.y += speed
             if self.ship_type != "chaser":
-                self.tar_y += self.speed
+                self.tar_y += speed
 
         if not locks[3] and down:
-            self.y -= self.speed
+            self.y -= speed
             if self.ship_type != "chaser":
-                self.tar_y -= self.speed
+                self.tar_y -= speed
 
         if not locks[0] and left:
-            self.x += self.speed
+            self.x += speed
             if self.ship_type != "chaser":
-                self.tar_x += self.speed
+                self.tar_x += speed
 
         if not locks[2] and right:
-            self.x -= self.speed
+            self.x -= speed
             if self.ship_type != "chaser":
-                self.tar_x -= self.speed
+                self.tar_x -= speed
 
         if up or down or left or right:
             self.moving = True
@@ -170,14 +180,14 @@ class Enemy(pygame.sprite.Sprite):
         # print((pos))
         target_pos = [self.tar_x, self.tar_y]
         # print(target_pos)
-        speed = self.speed
+        speed = self.e_speed
 
         if self.moving:
             speed = speed / 4
             # print('woo')
 
-        pos_check = (target_pos[0] - self.speed < pos[0] < target_pos[0] + self.speed) and (
-                target_pos[1] - self.speed < pos[1] < target_pos[1] + self.speed)
+        pos_check = (target_pos[0] - self.e_speed < pos[0] < target_pos[0] + self.e_speed) and (
+                target_pos[1] - self.e_speed < pos[1] < target_pos[1] + self.e_speed)
 
         self.pre_x = self.x
         self.pre_y = self.y

@@ -427,3 +427,14 @@ To do list
 6. make cut scenes
 7. make the leader board
 8. make dead man difficulty
+
+3/13/2022
+I uh mmmmmm
+
+Version 4.0.1
+
+Today I want to reformat everything or fix up some issues.
+Fixed up some code the enemy and game
+enemy projectiles should move better and space looks better.
+few new music tracks have been added for the bosses
+credits system now works
