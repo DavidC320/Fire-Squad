@@ -438,3 +438,40 @@ Fixed up some code the enemy and game
 enemy projectiles should move better and space looks better.
 few new music tracks have been added for the bosses
 credits system now works
+
+3/14/2022
+I want to start working on the upgrades
+Upgrades should be perminate upgrades except for health
+I want to start making base classes that a class can call upon 
+The issue I see causing problems is upgrade activation since my experience making projectiles to work though I have some ideas
+    1. State based
+        This method can be used to create checks.
+
+frame work
+The base class should contain the main interation of the object.
+    examples
+        object interations
+            Idle
+            Hovered
+            Select-succesce
+            Select-failed
+        Text interation
+            Selectable = Bool
+The class needs to be able to collect the players information.
+    examples
+        difficulty
+        credits
+        total rounds
+        if round was a boss round.
+        Upgrade level if needed
+# I'm noticing I might need a player info class to store player inforamtion easily.
+The child class will store the upgrades effect, icon, and text posistion.
+
+3/15/2022
+Today is the profefcinolaizm cininar and I am not ready. I have everything but I don't know what to do and thursday is the mock interveiw. I am going to be sick.
+
+I want to create the player information class because it might make my life easier.
+This class will have to be created all the way in Game start and shoved into several other classes. This will effectivly create a centralized area to keep player inforamtion to be quickly get and delete data.
+I should be able to restart player information easily
+
+

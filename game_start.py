@@ -3,8 +3,9 @@ from Settings import wn_height, wn_width
 from Game import GamePlay
 from Music import MusicCont
 from Menu import MainMenu, GameSelectMenu, GameOver
+from Player import Player_info
 # Fire Squad revised Post presitation
-# Version Beta 4.0.1
+# Version Beta 4.0.2
 # David Cruz
 
 
@@ -17,9 +18,12 @@ class FireSquad:
         self.running = True
         self.difficulty = None
 
+        # Player information class
+        player_info = Player_info()
+
         # game state classes
         self.mus = MusicCont()
-        self.g = GamePlay(self.screen, self.clock)  # the actual game
+        self.g = GamePlay(self.screen, self.clock, player_info)  # the actual game
         self.go = GameOver(self.screen, self.clock, self)
         self.m = MainMenu(self.screen, self.clock, self)
         self.s = GameSelectMenu(self.screen, self.clock, self)
