@@ -9,7 +9,7 @@ from Sound import SoundCont
 from Settings import enemy_name, enemy_weight, wn_width, wn_height, z_max, rangers, projectiles
 
 class GamePlay:
-    def __init__(self, surface, clock):
+    def __init__(self, surface, clock, player_info):
 
         # init setting
         self.display_surface = surface
@@ -46,21 +46,20 @@ class GamePlay:
         # Difficulty stuff
         self.enemySpeed = None
         self.playerSpeed = None
-        self.playerHealth = None
-
         # Player stuff
-        self.credits = 0
-        self.score = 0
+        self.player = player_info
         self.warning = False
         self.can_fire = True
         self.player_size = pygame.Rect((wn_width/2)-(527/2), 129 ,527, 356)  # code from k1 and k2
 
         # player firing atributes
         self.damage = 1
+        
 
         # Round stuff
         self.in_round = False
-        self.rounds = 0
+        self.round_is_boss = False
+        self.upgrade_shop = False
 
 
         ###################### Display things #############################
@@ -85,7 +84,6 @@ class GamePlay:
 
         # Enemy group
         self.enemyGroup = pygame.sprite.Group()  # Enemy bullets also go here
-        self.test_group = list()
 
         # Music controller
         self.music_player = MusicCont()
@@ -132,8 +130,8 @@ class GamePlay:
             self.display_surface.blit(self.game_ship_gui, (0, 0))
 
             # health text
-            if self.playerHealth > 0:
-                self.health_surface = self.font.render(f'Health: {self.playerHealth}', True, 'Red')
+            if self.player.health > 0:
+                self.health_surface = self.font.render(f'Health: {self.player.health}', True, 'Red')
                 self.health_rect = self.health_surface.get_rect(center=(wn_width / 2, wn_height / 1.06))
                 self.display_surface.blit(self.health_surface, self.health_rect)
 
@@ -145,7 +143,7 @@ class GamePlay:
             self.score_rect = self.health_surface.get_rect(center=(wn_width * .15, wn_height * .06))
             self.display_surface.blit(self.score_surface, self.score_rect)
 
-            self.score_surface = self.score_font.render(f'{self.score}', True, 'Black')
+            self.score_surface = self.score_font.render(f'{self.player.score}', True, 'Black')
             self.score_rect = self.health_surface.get_rect(center=(wn_width * .15, wn_height * .15))
             self.display_surface.blit(self.score_surface, self.score_rect)
 
@@ -154,12 +152,12 @@ class GamePlay:
             self.credits_rect = self.health_surface.get_rect(center=(wn_width * .90, wn_height * .06))
             self.display_surface.blit(self.credits_surface, self.credits_rect)
 
-            self.credits_surface = self.score_font.render(f'{self.credits}', True, 'Black')
+            self.credits_surface = self.score_font.render(f'{self.player.credits}', True, 'Black')
             self.credits_rect = self.health_surface.get_rect(center=(wn_width * .90, wn_height * .15))
             self.display_surface.blit(self.credits_surface, self.credits_rect)
 
             # rounds
-            self.round_surface = self.font.render(f"rounds: {self.rounds}", True, "Black")
+            self.round_surface = self.font.render(f"rounds: {self.player.total_rounds()}", True, "Black")
             self.round_rect = self.round_surface.get_rect(midtop=(wn_width/2, 10))
             self.display_surface.blit(self.round_surface, self.round_rect)
 
@@ -227,7 +225,7 @@ class GamePlay:
 
                 if self.in_round:
                     if self.current_time - self.round_start_time > self.round_length:
-                        self.rounds += 1
+                        self.player.rounds += 1
                         self.down_time_start_time = pygame.time.get_ticks()
                         self.in_round = False
 
@@ -237,6 +235,7 @@ class GamePlay:
                     if pygame.mouse.get_pressed()[0]:
                         if self.can_fire:
                             self.sound_player.fire_sfx()
+                            self.player.shots += 1
 
                         for enemy in self.enemyGroup:
                             if enemy.ship_type != "bullet":
@@ -245,15 +244,16 @@ class GamePlay:
                                     if enemy.rect.colliderect(self.cursor.sprite.rect):
                                         enemy.health -= self.damage
                                         if enemy.health <= 0:
-                                            self.score += enemy.score_points
+                                            self.player.score += enemy.score_points
+                                            self.player.kills += 1
                                             if enemy.ship_type in enemy_name:
-                                                self.credits += enemy.credits
+                                                self.player.credits += enemy.credits
                                             enemy.kill()
                         self.can_fire = False  # turns off firing until the ship auto reloads
 
                     self.enemy_collide_with_player()
 
-                if self.playerHealth <= 0:
+                if self.player.health <= 0:
                     self.enemyGroup.empty()
                     self.starParticles.empty()
                     self.running = False
@@ -266,7 +266,7 @@ class GamePlay:
                         if enemy.z > z_max * .8:
                             if enemy.z >= z_max:
                                 self.sound_player.hit_sfx()
-                                self.playerHealth -= enemy.damage
+                                self.player.health -= enemy.damage
                                 enemy.kill()
                             self.warning = True
                     else:
@@ -277,7 +277,7 @@ class GamePlay:
                     if enemy.z > z_max * .8:
                         if enemy.z >= z_max:
                             self.sound_player.hit_sfx()
-                            self.playerHealth -= enemy.damage
+                            self.player.health -= enemy.damage
                             enemy.kill()
                         self.warning = True
 
@@ -344,42 +344,42 @@ class GamePlay:
         if difficulty == 0:
             self.enemySpeed = 4
             self.playerSpeed = 3
-            self.playerHealth = 5
+            playerHealth = 5
             star_val = 500
             enemy_timer_value = 200
         elif difficulty == 1:
             self.enemySpeed = 4
             self.playerSpeed = 5 
-            self.playerHealth = 4
+            playerHealth = 4
             star_val = 400
             enemy_timer_value = 400
         elif difficulty == 2:
             self.enemySpeed = 9
             self.playerSpeed = 7
-            self.playerHealth = 3
+            playerHealth = 3
             star_val = 200
             enemy_timer_value = 500
         elif difficulty == 3:
             self.enemySpeed = 7
             self.playerSpeed = 5
-            self.playerHealth = 2
+            playerHealth = 2
             star_val = 400
             enemy_timer_value = 400
         elif difficulty == 4:
             self.enemySpeed = 7
             self.playerSpeed = 3
-            self.playerHealth = 1
+            playerHealth = 1
             star_val = 200 
             enemy_timer_value = 400
         else:
             self.enemySpeed = 0
             self.playerSpeed = 4
-            self.playerHealth = 20
+            playerHealth = 20
             star_val = 600
             enemy_timer_value = 200
 
         #print(f"{self.enemySpeed}\n{self.playerSpeed}\n{self.playerHealth}")
-
+        self.player.health = playerHealth
         # sets the timer
         pygame.time.set_timer(self.enemy_timer, enemy_timer_value)
         pygame.time.set_timer(self.star_particle_timer, star_val)
@@ -391,8 +391,6 @@ class GamePlay:
         self.down_time_start_time = 0
         self.round_start_time = 0
         self.in_round = False
-        self.rounds = 0
-        self.credits = 0
-        self.score = 0
+        self.player.reset_info()
         self.warning = False
         self.can_fire = True
