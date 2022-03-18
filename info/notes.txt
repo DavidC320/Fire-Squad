@@ -474,4 +474,28 @@ I want to create the player information class because it might make my life easi
 This class will have to be created all the way in Game start and shoved into several other classes. This will effectivly create a centralized area to keep player inforamtion to be quickly get and delete data.
 I should be able to restart player information easily
 
+3/17/2022
+Today was mock interveiws and I think I did well until I reentered the room #### ah #### ###### my head.
 
+I'm working on preparing the program for the upgrade update and boss update.
+
+Here is the plan.
+
+1. Prepare the code for boss rounds 
+    a. To make this I will need to make a check if 4 rounds have past. if this is true then one boss round is
+        is added to the player info. During a boss round, the game will switch to a boss state using a bool like
+        isBoss. In this state only the boss and player can enteract with the game world.
+    b. Ready the boss timer. The player will have 1-4 minutes to beat the boss. If the player fails to beat the
+        boss, then the game is instantly over.
+        ba. Later on I want to add diffent boss requirments. One requirement is Survive where the palyer hast to
+            survive the encounter.
+            
+2. Start working on the upgrade class.
+    a. crate the base class.
+        aa. This class will control what all of the upgrades will operate. This includes movement and interation.
+    b. create the 2 main upgrades.
+        ba. This will be used to create upgrades that affect the game. This class will contain the icons and text
+            for the upgrades.
+        bb. This will contain the upgrade function. the base class can't be used to pre store functions because I could have to
+            already pre made all the functions which is a valid way to do it, thoughe I want to keep this game as mutable
+            as possible.

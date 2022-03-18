@@ -5,7 +5,7 @@ from Music import MusicCont
 from Menu import MainMenu, GameSelectMenu, GameOver
 from Player import Player_info
 # Fire Squad revised Post presitation
-# Version Beta 4.0.2
+# Version Beta 4.0.3
 # David Cruz
 
 

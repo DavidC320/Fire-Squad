@@ -120,7 +120,7 @@ class Enemy(pygame.sprite.Sprite):
         ############################ Creates ship image ############################
 
         self.image_size = self.ship_image.get_size()
-        self.image = pygame.transform.scale(self.ship_image, (self.image_size[0] * self.z, self.image_size[1] * self.z))
+        self.image = pygame.transform.scale(self.ship_image, (int(self.image_size[0] * self.z), int(self.image_size[1] * self.z)))
         self.rect = self.image.get_rect(center=(self.x, self.y))
 
         ############################ Creates ship image ############################
@@ -221,7 +221,7 @@ class Enemy(pygame.sprite.Sprite):
         else:
             if self.ship_type in rangers:
                 self.can_fire = True
-        self.image = pygame.transform.scale(self.ship_image, (self.image_size[0] * self.z, self.image_size[1] * self.z))
+        self.image = pygame.transform.scale(self.ship_image, (int(self.image_size[0] * self.z), int(self.image_size[1] * self.z)))
 
     def enemy_run(self, current_time):
         if current_time - self.spawn_time > 20000:

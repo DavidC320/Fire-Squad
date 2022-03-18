@@ -59,7 +59,6 @@ class GamePlay:
         # Round stuff
         self.in_round = False
         self.round_is_boss = False
-        self.upgrade_shop = False
 
 
         ###################### Display things #############################
