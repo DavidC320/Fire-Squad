@@ -499,3 +499,6 @@ Here is the plan.
         bb. This will contain the upgrade function. the base class can't be used to pre store functions because I could have to
             already pre made all the functions which is a valid way to do it, thoughe I want to keep this game as mutable
             as possible.
+
+3/25/2022
+I lost track of what I was doing... uh.

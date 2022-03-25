@@ -1,0 +1,64 @@
+Rounds
+After a round, the player will be able to spend their credits to buy upgrades.
+Upgrades
+Health
+Cost: 5 * hp_upgrade + (((2 * int( 0.5 * rounds)) * (1 * difficulty_value)) - (15 * rounds) 
+The amount of damage your ship can take
+Damage
+Cost: 5 * dm_upgrade + ((2 * int( 0.5 * rounds)) * (1 * difficulty_value)) - (15 * rounds)
+The amount of damage your bullets can deal
+Fire Rate
+Cost: 10 * fr_upgrade + ((2 * int( 0.5 * rounds)) * (1 * difficulty_value)) - (15 * rounds)
+How fast you can fire
+Bullet speed
+Cost: 10 * bs_upgrade + ((2 * int( 0.5 * rounds)) * (1 * difficulty_value)) - (15 * rounds)
+How fast your bullets are
+
+/ thoughts
+I have no idea what most of this means. So lets disect it
+
+5 * hp_upgrade + (((2 * int( 0.5 * rounds)) * (1 * difficulty_value)) - (15 * rounds)
+hp_upgrade is level
+rounds is total rounds the player has been through
+difficult_value is the difficult number
+
+further disection
+5 * hp_upgrade + 
+This makes sense 5 times the level
+
+(
+    ((2 * int( 0.5 * rounds)) * difficulty_value)
+    2 is added every 2 rounds times the difficulty
+
+
+    - (15 * rounds)
+    This makes no sense because This will just casue a negative value all any time a price calculation is
+    active. This will be removed.
+
+5 * hp_upgrade + ((2 * int( 0.5 * rounds)) * difficulty_value)
+
+4500 credits have been gained in a good preforming run on dead man
+
+5 * 1 + ((2 * int( 0.5 * 1) * 5)
+5 creadits which is a bad number
+
+^5^ * 1 + ^((2 * int( 0.5 * 1) * 5)^
+everything inside of the ^^ is a problem area
+5 represents the base price of the upgrade which is too low
+5 shouls be 1000 points
+
+((2 * int( 0.5 * 1) * 5)
+2 is the added price
+0.5 is the double multiplier only doubling if rounds is a multiple of 2 or something
+1 is the total rounds
+5 is the Difficulty
+
+The problem with this equation is that in one round all of this is just 0. the difficulty should always affect the price
+of the item.
+(1000 * level + (200 * int(0.5 * rounds))) * dificulty
+This is becoming better but if the difficulty is 0 then everything is free
+ugh oh I got it
+if value > 0:
+    math
+else:
+math minus dificulty
