@@ -255,7 +255,7 @@ class GameSelectMenu(Menu):
                 self.data_ob.difficulty = 3
 
             elif self.state == 'dead man':
-                self.data_ob.difficulty = 4
+                self.data_ob.difficulty = 5
 
             self.run_display = False
             self.data_ob.start = False

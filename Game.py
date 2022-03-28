@@ -1,3 +1,4 @@
+from msilib.schema import Upgrade
 import pygame
 from random import choices, randint
 from Cursor import CursorControl
@@ -6,6 +7,7 @@ from Particles import Particle
 from Enemy import Enemy
 from Music import MusicCont
 from Sound import SoundCont
+from Upgrades import HealthUpgrade
 from Settings import enemy_name, enemy_weight, wn_width, wn_height, z_max, rangers, projectiles
 
 class GamePlay:
@@ -29,13 +31,21 @@ class GamePlay:
         self.enemy_timer = pygame.USEREVENT + 1
         pygame.time.set_timer(self.enemy_timer, self.enemyTimerValue)
 
+        ####### End of game timers #######
+
         # Round timer
         self.round_length = 60000
         self.round_start_time = 0
 
+        # Upgrade time timer
+        self.upgrade_time_length = 5000
+        self.upgrade_time_start_time = 0  # The time when down time starts
+
         # Down time timer
         self.down_time_length = 2000
         self.down_time_start_time = 0  # The time when down time starts
+
+        ####### End of game timers #######
 
         # Firerate timer
         self.firerate = 500  # defualt firerate, not too slow, not too fast
@@ -52,12 +62,9 @@ class GamePlay:
         self.can_fire = True
         self.player_size = pygame.Rect((wn_width/2)-(527/2), 129 ,527, 356)  # code from k1 and k2
 
-        # player firing atributes
-        self.damage = 1
-        
-
         # Round stuff
         self.in_round = False
+        self.in_upgrade = False
         self.round_is_boss = False
 
 
@@ -84,6 +91,9 @@ class GamePlay:
         # Enemy group
         self.enemyGroup = pygame.sprite.Group()  # Enemy bullets also go here
 
+        # Upgrade group
+        self.upgradeGroup = pygame.sprite.Group()
+
         # Music controller
         self.music_player = MusicCont()
         # Sound controller
@@ -105,7 +115,6 @@ class GamePlay:
             self.check_events()
 
             ###################### Display things #############################
-
             # Display stuff
             self.display_surface.fill((0, 11, 26))
 
@@ -120,6 +129,13 @@ class GamePlay:
             if self.in_round:
                 self.enemyGroup.draw(self.display_surface)
                 self.enemyGroup.update(self.space.lock_config, self.current_time)
+
+            else:
+                self.upgradeGroup.draw(self.display_surface)
+                if self.in_upgrade:
+                    self.upgradeGroup.update(False, False, False)
+                else:
+                    self.upgradeGroup.update(False, False, True)
 
             # Cursor
             self.cursor.update(self.mouse_position)
@@ -164,6 +180,10 @@ class GamePlay:
                 self.round_surface = self.font.render(f"time: {int((self.current_time - self.round_start_time)/1000)}", True, "Black")
                 self.round_rect = self.round_surface.get_rect(midtop=(wn_width/2, 60))
                 self.display_surface.blit(self.round_surface, self.round_rect)
+            elif self.in_upgrade:
+                self.round_surface = self.font.render(f"time: {int((self.current_time - self.upgrade_time_start_time)/1000)}", True, "Black")
+                self.round_rect = self.round_surface.get_rect(midtop=(wn_width/2, 60))
+                self.display_surface.blit(self.round_surface, self.round_rect)
             else:
                 self.round_surface = self.font.render(f"Break", True, "Black")
                 self.round_rect = self.round_surface.get_rect(midtop=(wn_width/2, 60))
@@ -193,13 +213,13 @@ class GamePlay:
 
                 ############################### Timers ###############################
 
-                if events.type == self.star_particle_timer:
+                if events.type == self.star_particle_timer: # star spanwer
                     star = Particle((self.space.spawn_x, self.space.spawn_y), .50, (0, 0), self.playerSpeed, "star", 0, pygame.time.get_ticks())
                     self.starParticles.add(star)
                     star = Particle((self.space.spawn_x, self.space.spawn_y), .50, (0, 0), self.playerSpeed, "star", 0, pygame.time.get_ticks())
                     self.starParticles.add(star)
 
-                if self.in_round:
+                if self.in_round:  # Enemy spawner
                     if events.type == self.enemy_timer:
                         if len(self.enemyGroup) <= 199:
                             enemy_type = choices(enemy_name, weights=enemy_weight, k=1)  # taken from D3
@@ -210,27 +230,36 @@ class GamePlay:
                             # print(self.test_group)
                         self.ranger_fire()
 
-                elif len(self.enemyGroup) >= 1:
+                elif len(self.enemyGroup) >= 1:  # enemy deleter
                     self.enemyGroup.empty()
 
-                if self.current_time - self.button_press_time > self.firerate:
+                if self.current_time - self.button_press_time > self.firerate: # player refire
                     self.can_fire = True
 
-                if self.current_time - self.down_time_start_time > self.down_time_length:
-                    if not self.in_round:
+                if self.in_round:  # round time
+                    if self.current_time - self.round_start_time > self.round_length:
+                        self.player.rounds += 1
+                        self.upgrade_time_start_time = pygame.time.get_ticks()
+                        self.in_round = False
+                        self.in_upgrade = True
+                        upgrade_cell = HealthUpgrade(wn_width/2, self.difficulty, self.player)
+                        self.upgradeGroup.add(upgrade_cell)
+
+                elif self.in_upgrade:
+                    if self.current_time - self.upgrade_time_start_time > self.upgrade_time_length:  # upgrade time
+                        self.down_time_start_time = pygame.time.get_ticks()
+                        self.in_upgrade = False
+
+                else:
+                    if self.current_time - self.down_time_start_time > self.down_time_length:  # down time
                         self.round_start_time = pygame.time.get_ticks()
                         self.in_round = True
                         self.music_player.gameMusic_player()
-
-                if self.in_round:
-                    if self.current_time - self.round_start_time > self.round_length:
-                        self.player.rounds += 1
-                        self.down_time_start_time = pygame.time.get_ticks()
-                        self.in_round = False
+                        self.upgradeGroup.empty()
 
                 ########################### miscilanious ###########################
 
-                if self.in_round:
+                if self.in_round:  # round stuff
                     if pygame.mouse.get_pressed()[0]:
                         if self.can_fire:
                             self.sound_player.fire_sfx()
@@ -241,7 +270,7 @@ class GamePlay:
                                 if self.can_fire:
                                     self.button_press_time = pygame.time.get_ticks()
                                     if enemy.rect.colliderect(self.cursor.sprite.rect):
-                                        enemy.health -= self.damage
+                                        enemy.health -= self.player.damage
                                         if enemy.health <= 0:
                                             self.player.score += enemy.score_points
                                             self.player.kills += 1
@@ -251,6 +280,17 @@ class GamePlay:
                         self.can_fire = False  # turns off firing until the ship auto reloads
 
                     self.enemy_collide_with_player()
+
+                elif self.in_upgrade:
+                    None
+                    """for cell in self.upgradeGroup:
+                        if cell.rect.colliderect(self.cursor.sprite.rect):
+                            if pygame.mouse.get_pressed()[0]:
+                                self.upgradeGroup.update(True, True, False)
+                            else:
+                                self.upgradeGroup.update(True, False, False)
+                        else:
+                            self.upgradeGroup.update(False, False, False)"""
 
                 if self.player.health <= 0:
                     self.enemyGroup.empty()
@@ -341,36 +381,42 @@ class GamePlay:
 
     def difficulty_set(self, difficulty):
         if difficulty == 0:
+            self.difficulty = 0
             self.enemySpeed = 4
             self.playerSpeed = 3
             playerHealth = 5
             star_val = 500
             enemy_timer_value = 200
         elif difficulty == 1:
+            self.difficulty = 1
             self.enemySpeed = 4
             self.playerSpeed = 5 
             playerHealth = 4
             star_val = 400
             enemy_timer_value = 400
         elif difficulty == 2:
+            self.difficulty = 2
             self.enemySpeed = 9
             self.playerSpeed = 7
             playerHealth = 3
             star_val = 200
             enemy_timer_value = 500
         elif difficulty == 3:
+            self.difficulty = 3
             self.enemySpeed = 7
             self.playerSpeed = 5
             playerHealth = 2
             star_val = 400
             enemy_timer_value = 400
         elif difficulty == 4:
+            self.difficulty = 4
             self.enemySpeed = 7
             self.playerSpeed = 3
             playerHealth = 1
             star_val = 200 
             enemy_timer_value = 400
         else:
+            self.difficulty = 5
             self.enemySpeed = 0
             self.playerSpeed = 4
             playerHealth = 20

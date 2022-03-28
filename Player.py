@@ -11,8 +11,8 @@ class Player_info:
         self.boss_rounds = 0
 
         # upgrade levels
-        self.damage = 1
-        self.health = 1
+        self.damage_lv = 1
+        self.health_lv = 1
         self.firerate_lv = 1
         
         # colleted data

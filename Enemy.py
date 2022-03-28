@@ -84,9 +84,7 @@ class Enemy(pygame.sprite.Sprite):
             #varables
             self.damage = 1
             hypo = math.hypot(targ_x - self.x, targ_y - self.y)
-            print(hypo/100)
             self.e_speed = self.e_speed / (hypo/170)
-            print(self.e_speed)
             self.z_speed = .003 * enemy_speed
 
         if self.ship_type == "missle":
@@ -102,9 +100,7 @@ class Enemy(pygame.sprite.Sprite):
             self.damage = 1
             self.score_points = 100
             hypo = math.hypot(targ_x - self.x, targ_y - self.y)
-            print(hypo/100)
             self.e_speed = self.e_speed / (hypo/170)
-            print(self.e_speed)
             self.z_speed = .0015 * enemy_speed
 
         ############################### Projectiles ###############################

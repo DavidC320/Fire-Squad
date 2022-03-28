@@ -5,7 +5,7 @@ from Music import MusicCont
 from Menu import MainMenu, GameSelectMenu, GameOver
 from Player import Player_info
 # Fire Squad revised Post presitation
-# Version Beta 4.0.4
+# Version Beta 4.0.5
 # David Cruz
 
 
@@ -53,16 +53,14 @@ class FireSquad:
                     pass
                 elif self.credits:
                     pass
-                else:  # starting menu
+                else:  # starting menua
                     self.m.display_menu()
-
 
 pygame.init()
 screen = pygame.display.set_mode((wn_width, wn_height))
 pygame.display.set_caption('Fire Squad')
 
 fire_squad = FireSquad()
-
 
 if __name__ == "__main__":
     fire_squad.start_game()

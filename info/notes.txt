@@ -502,3 +502,27 @@ Here is the plan.
 
 3/25/2022
 I lost track of what I was doing... uh.
+I am loosing it here. I have a det due to the school before the 8th and my house has been torn from me.
+Yeah i get it "You can still go upstairs" no I can;t just go upstairs, I'm highly opininated and
+will just start getting meanier I stay up there. The smell is putrid, the food tastes akward, and
+the place where I was free to do what ever I wanted mostly walk around saying dumb things akin to 
+baby babls is taken from me.
+
+3/27/2022
+I have time to program... hurrah.
+I'm still continuing to make the upgrade stuff and now I can implement it into the game.
+
+to implement this upgrade screen is to make 2 timers 
+upgrade shop time. 30,000 30 seconds.
+start next round time. what ever the time is. 
+
+I have completed making the upgrade screen kind of.
+
+Progress:
+    Begginings of the upgrade screen
+inprogress:
+    Activation and hovering functions
+
+Problems:
+    The UI for the upgrade would not update nor move. Fixed
+        Since i was using Upgradebase class as a parent to the Health upgrade. I needed to seperate several verables from the parent class into the child class.
