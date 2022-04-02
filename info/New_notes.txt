@@ -1,0 +1,20 @@
+4/1/2022
+New notes and format
+1. no more personal journal style notes
+thats it.
+
+Forgot to update notes.
+
+Goal | implement upgrade system: Complete
+New Goal | make the upgrade UI look good: partialy coplete
+
+Progress:
+    all early upgrades completed
+        Health
+            increase health by one
+        Damage
+            increase damage by one // will be noticable when enemy round scaling is implemented
+        Firerate
+            decrease firerate by 100 up 500 // later on the weapon will switch to a laser
+Inprogress:
+    making upgrade UI better

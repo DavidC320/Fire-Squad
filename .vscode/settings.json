@@ -8,5 +8,5 @@
     ],
     "python.testing.pytestEnabled": false,
     "python.testing.unittestEnabled": true,
-    "workbench.colorTheme": "Solarized Dark"
+    "workbench.colorTheme": "Visual Studio 2019 Dark"
 }

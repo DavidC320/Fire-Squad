@@ -34,6 +34,7 @@ Boss music:
     The True Final boss
     Y♥M I ♥Y
     Music: https://www.chosic.com/free-music/all/ 
+    kylie_minogue-confide_in_me
 
 Title music:
     Lemon & Einar K - Anticipation (Original Mix).mid
@@ -142,3 +143,7 @@ k2 = clear code
 
 K3 = buildwithpython
     https://youtu.be/pcdB2s2y4Qc
+
+4/1/2022
+L1 = sloth
+    https://stackoverflow.com/questions/35721890/pygame-image-scale-does-not-work-as-expected

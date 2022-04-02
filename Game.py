@@ -7,7 +7,7 @@ from Particles import Particle
 from Enemy import Enemy
 from Music import MusicCont
 from Sound import SoundCont
-from Upgrades import HealthUpgrade
+from Upgrades import HealthUpgrade, DamageUpgrade, FirerateUpgrade
 from Settings import enemy_name, enemy_weight, wn_width, wn_height, z_max, rangers, projectiles
 
 class GamePlay:
@@ -34,7 +34,7 @@ class GamePlay:
         ####### End of game timers #######
 
         # Round timer
-        self.round_length = 60000
+        self.round_length = 1000  # 60000
         self.round_start_time = 0
 
         # Upgrade time timer
@@ -146,48 +146,34 @@ class GamePlay:
 
             # health text
             if self.player.health > 0:
-                self.health_surface = self.font.render(f'Health: {self.player.health}', True, 'Red')
-                self.health_rect = self.health_surface.get_rect(center=(wn_width / 2, wn_height / 1.06))
-                self.display_surface.blit(self.health_surface, self.health_rect)
+                self.text_write(f'Health: {self.player.health}', 'red', (wn_width / 2, wn_height / 1.06), 1, "center")
 
             # player rect display
             pygame.draw.rect(self.display_surface, "Red", self.player_size, 2)
             
             # Score text
-            self.score_surface = self.font.render(f'Score:', True, 'Black')
-            self.score_rect = self.health_surface.get_rect(center=(wn_width * .15, wn_height * .06))
-            self.display_surface.blit(self.score_surface, self.score_rect)
 
-            self.score_surface = self.score_font.render(f'{self.player.score}', True, 'Black')
-            self.score_rect = self.health_surface.get_rect(center=(wn_width * .15, wn_height * .15))
-            self.display_surface.blit(self.score_surface, self.score_rect)
+            self.text_write(f'Score:', 'black', (wn_width * .10, wn_height * .06), 1, "center")
+
+            self.text_write(f'{self.player.score}', "black", (wn_width * .05, wn_height * .15), 2, "midleft")
 
             # credits(money)
-            self.credits_surface = self.font.render(f'Credits:', True, 'Black')
-            self.credits_rect = self.health_surface.get_rect(center=(wn_width * .90, wn_height * .06))
-            self.display_surface.blit(self.credits_surface, self.credits_rect)
 
-            self.credits_surface = self.score_font.render(f'{self.player.credits}', True, 'Black')
-            self.credits_rect = self.health_surface.get_rect(center=(wn_width * .90, wn_height * .15))
-            self.display_surface.blit(self.credits_surface, self.credits_rect)
+            self.text_write(f'Credits:', "black", (wn_width * .87, wn_height * .06), 1, "center")
+
+            self.text_write(f'{self.player.credits}', "black", (wn_width * .80, wn_height * .15), 2, "midleft")
 
             # rounds
-            self.round_surface = self.font.render(f"rounds: {self.player.total_rounds()}", True, "Black")
-            self.round_rect = self.round_surface.get_rect(midtop=(wn_width/2, 10))
-            self.display_surface.blit(self.round_surface, self.round_rect)
+            self.text_write(f"rounds: {self.player.total_rounds()}", "black", (wn_width/2, 10), 1, "midtop")
 
             if self.in_round:
-                self.round_surface = self.font.render(f"time: {int((self.current_time - self.round_start_time)/1000)}", True, "Black")
-                self.round_rect = self.round_surface.get_rect(midtop=(wn_width/2, 60))
-                self.display_surface.blit(self.round_surface, self.round_rect)
+                self.text_write(f"time: {int((self.current_time - self.round_start_time)/1000)}", "black", (wn_width/2, 60), 1, "midtop")
+            
             elif self.in_upgrade:
-                self.round_surface = self.font.render(f"time: {int((self.current_time - self.upgrade_time_start_time)/1000)}", True, "Black")
-                self.round_rect = self.round_surface.get_rect(midtop=(wn_width/2, 60))
-                self.display_surface.blit(self.round_surface, self.round_rect)
+                self.text_write(f"time: {int((self.current_time - self.upgrade_time_start_time)/1000)}", "black", (wn_width/2, 60), 1, "midtop")
+            
             else:
-                self.round_surface = self.font.render(f"Break", True, "Black")
-                self.round_rect = self.round_surface.get_rect(midtop=(wn_width/2, 60))
-                self.display_surface.blit(self.round_surface, self.round_rect)
+                self.text_write("Break", "black", (wn_width/2, 60), 1, "midtop")
 
             # Warning text
             if self.warning:
@@ -197,6 +183,27 @@ class GamePlay:
             pygame.display.update()
             self.clock.tick(60)
         return False
+
+    def text_write(self, text, color, pos, font_num, ren_point):
+        """font_num is the number a font is assigned to
+        1. default
+        2. score_font"""
+        # font options
+        if font_num == 1:
+            screen_text = self.font.render(text, True, color)
+        else:
+            screen_text = self.score_font.render(text, True, color)
+
+        # rect options
+        if ren_point == "midtop":
+            screen_text_rect = screen_text.get_rect(midtop=(pos))
+        elif ren_point == "midleft":
+            screen_text_rect = screen_text.get_rect(midleft=(pos))
+        elif ren_point == "center":
+            screen_text_rect = screen_text.get_rect(center=(pos))
+        else:
+            print(f"uh oh {text}" )
+        self.display_surface.blit(screen_text, screen_text_rect)
 
     def check_events(self):
 
@@ -233,7 +240,7 @@ class GamePlay:
                 elif len(self.enemyGroup) >= 1:  # enemy deleter
                     self.enemyGroup.empty()
 
-                if self.current_time - self.button_press_time > self.firerate: # player refire
+                if self.current_time - self.button_press_time > self.firerate - ((self.player.firerate_lv - 1) * 100): # player refire
                     self.can_fire = True
 
                 if self.in_round:  # round time
@@ -242,7 +249,11 @@ class GamePlay:
                         self.upgrade_time_start_time = pygame.time.get_ticks()
                         self.in_round = False
                         self.in_upgrade = True
-                        upgrade_cell = HealthUpgrade(wn_width/2, self.difficulty, self.player)
+                        upgrade_cell = HealthUpgrade((wn_width/2)/2, self.difficulty, self.player, self.display_surface)
+                        self.upgradeGroup.add(upgrade_cell)
+                        upgrade_cell = DamageUpgrade(wn_width/2, self.difficulty, self.player, self.display_surface)
+                        self.upgradeGroup.add(upgrade_cell)
+                        upgrade_cell = FirerateUpgrade((wn_width/2)*1.5, self.difficulty, self.player, self.display_surface)
                         self.upgradeGroup.add(upgrade_cell)
 
                 elif self.in_upgrade:
@@ -282,15 +293,16 @@ class GamePlay:
                     self.enemy_collide_with_player()
 
                 elif self.in_upgrade:
-                    None
-                    """for cell in self.upgradeGroup:
+                    for cell in self.upgradeGroup:
                         if cell.rect.colliderect(self.cursor.sprite.rect):
+                            cell.select_fun(True)
                             if pygame.mouse.get_pressed()[0]:
-                                self.upgradeGroup.update(True, True, False)
-                            else:
-                                self.upgradeGroup.update(True, False, False)
+                                cell.activation()
+
                         else:
-                            self.upgradeGroup.update(False, False, False)"""
+                            cell.select_fun(False)
+                        
+                        
 
                 if self.player.health <= 0:
                     self.enemyGroup.empty()

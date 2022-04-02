@@ -7,23 +7,23 @@ class MusicCont():
     def __init__(self):
         # list based off of j1
         self.gameMusic = (
-            "Playlist\\71075.mid",
-            "Playlist\\celes2.mid",
-            "Playlist\\Born-To-Be-Alive-1.mid",
-            "Playlist\\Strange-Kind-Of-Woman.mid", 
+            "Playlist\\game\\71075.mid",
+            "Playlist\\game\\celes2.mid",
+            "Playlist\\game\\Born-To-Be-Alive-1.mid",
+            "Playlist\\game\\Strange-Kind-Of-Woman.mid", 
             ################# 4.0.0 #################
-            "Playlist\\Absolute - Dream Odyssey.mid",
-            "Playlist\\Bad_Religion_-_A_Walk.mid",
-            "Playlist\\Human3gm.mid"
+            "Playlist\\game\\Absolute - Dream Odyssey.mid",
+            "Playlist\\game\\Bad_Religion_-_A_Walk.mid",
+            "Playlist\\game\\Human3gm.mid"
             )
-        self.menuMusic = "Playlist\\Lemon & Einar K - Anticipation (Original Mix).mid"
+        self.menuMusic = "Playlist\\title\\Lemon & Einar K - Anticipation (Original Mix).mid"
         self.gameoverMusic = (
-            "Playlist\\73561_08.mid.mid",
+            "Playlist\\gameover\\73561_08.mid.mid",
             ################ 4.0.0 ################
-            "Playlist\\La-Cathedrale-Engloutie.mid",
-            "Playlist\\Never-Gonna-Give-You-Up-3.mid",
-            "Playlist\\Skies of Arcadia - Tension Theme.mid",
-            "Playlist\\zeal.mid")
+            "Playlist\\gameover\\La-Cathedrale-Engloutie.mid",
+            "Playlist\\gameover\\Never-Gonna-Give-You-Up-3.mid",
+            "Playlist\\gameover\\Skies of Arcadia - Tension Theme.mid",
+            "Playlist\\gameover\\zeal.mid")
 
     def gameMusic_player(self):
         music_pic = randint(0,len(self.gameMusic) - 1)
