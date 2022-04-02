@@ -19,12 +19,19 @@ Game music:
     Bad_Religion_-_A_Walk.mid
     Human3gm.mid
 
+    4.0.6
+    Chatanoogachoo
+    ss9th11
+
 Game over music:
     73561_08
     La-Cathedrale-Engloutie.mid
     Never-Gonna-Give-You-Up-3.mid
     Skies of Arcadia - Tension Theme.mid
     zeal.mid
+
+    4.0.6
+    Notorious Thugs
 
 Boss music:
     Amunet Prime
@@ -33,8 +40,14 @@ Boss music:
 
     The True Final boss
     Y♥M I ♥Y
-    Music: https://www.chosic.com/free-music/all/ 
+    Music: https://www.chosic.com/free-music/all/
+
+    4.0.6
     kylie_minogue-confide_in_me
+    Berlin the Metro
+    Gillespine night in turnisia
+    Heavy
+    pink-most girls
 
 Title music:
     Lemon & Einar K - Anticipation (Original Mix).mid

@@ -34,7 +34,7 @@ class GamePlay:
         ####### End of game timers #######
 
         # Round timer
-        self.round_length = 1000  # 60000
+        self.round_length = 60000  # 60000
         self.round_start_time = 0
 
         # Upgrade time timer
@@ -246,6 +246,10 @@ class GamePlay:
                 if self.in_round:  # round time
                     if self.current_time - self.round_start_time > self.round_length:
                         self.player.rounds += 1
+                        if self.player.rounds >= 5:
+                            self.player.rounds = 0
+                            self.player.boss_rounds += 1
+                            self.round_is_boss = True
                         self.upgrade_time_start_time = pygame.time.get_ticks()
                         self.in_round = False
                         self.in_upgrade = True
@@ -265,7 +269,10 @@ class GamePlay:
                     if self.current_time - self.down_time_start_time > self.down_time_length:  # down time
                         self.round_start_time = pygame.time.get_ticks()
                         self.in_round = True
-                        self.music_player.gameMusic_player()
+                        if self.round_is_boss:
+                            self.music_player.bossMusic_player()
+                        else:
+                            self.music_player.gameMusic_player()
                         self.upgradeGroup.empty()
 
                 ########################### miscilanious ###########################
