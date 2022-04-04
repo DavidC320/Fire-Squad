@@ -7,6 +7,7 @@ Forgot to update notes.
 
 Goal | implement upgrade system: Complete
 New Goal | make the upgrade UI look good: partialy coplete
+New Goal | work on boss rounds
 
 Progress:
     all early upgrades completed
@@ -16,5 +17,65 @@ Progress:
             increase damage by one // will be noticable when enemy round scaling is implemented
         Firerate
             decrease firerate by 100 up 500 // later on the weapon will switch to a laser
+    boss round check
+    new music for game and game over
+    implemented boss music
 Inprogress:
     making upgrade UI better
+        upgrade icons need to be added
+        test upgrade frame needs to be removed
+        name and price need to be resized and relocated
+    boss round machanics
+        round timer terning into a timelimit
+        normal enemies don't spawn
+        bosses will be placed in a seperate boss group
+        upgrades will be discounted by half
+
+4/2/2022
+    Start working on boss mechanics
+    fix upgrade UI
+    get ready for bosses
+
+4/4/2022
+I'm not too good with updating notes.
+Upgrades have been completed; Health, Damage, and Firerate have been completly implemented into the gamme.
+
+Upgrade classification
+    Minor upgrades - Common upgrades that can be upgraded infinitly. i.e Health and Damage
+    Major upgrades - uncommon upgrades that can be upgraded a set number of times. I.e Firerate
+    Master upgrades - Rare upgrades that can only be upgraded once.
+
+
+Future plans for the upgrades - Once leader boards are added
+    1. Deluexgrades - minor upgrades have a rare chance to appear as Deluexgrades which give 3 times the state for 1lv.
+    2. more upgrades
+        1. Master Ship Shield installer - unlocks ship shield specific upgrades. +1 to shield
+            a. Minor Shield Cell - addes 1 cell to the ship and are very exspensive
+            b. Major Sheild Recharge - decreases the sheild recharge rate to at least 3 seconds
+        2. Master Dodge - unlocks the ability to dash in four directions.
+        3. Major bullet speed - increases bullet speed until it hits max which will make the gun a laser.
+    3. different upgrade frames for all upgrade classes.
+
+Next part - bosses
+Goal - 3 bosses
+    1. Mothership / easy
+    2. Battleship / difficult
+    3. Oculus / Hard - first one I'm doing
+Oculus is the most important boss in the game (from easy to very-hard) being the reason ships can change z posistions.
+Oculus will be a hard boss to make because it spawns minions a the start of the round that orbit from it's sides and it's ability to attack the player, it's basicly both other bosses combined.
+creating minion spawn at the beginng of the round I'll make a while loop that count up to a certain number before switching off
+making the boss's one attack will be the most difficult part.
+    1. the boss would need to be able to store it's own attack cycle, attack charge, and attack durration. This also means that I need to make a start time for each of the timers
+    2. The boss uses a laser attack that displays a reticle on screeen which enemies curretly don't have so I need to add that to.
+
+To make this easier to make, I'll need to redo the enemy classes
+    1. make a master enemy class that has all of the basic funtiality mostly movement
+    2. makae a class for each of the enemies so 3 enemies for now
+    3. make a class for each projectile so 2 classes
+    4. give all the rangers a shoot function
+    5. allow the enemies to add sprite into groups, put bullets into the enemy group
+
+other things I need to do.
+    1. remove the shoot funtion from the game itself, this will be placed into the idiviual enemy
+    2. create 3 enemy groups; enemygroup, projectileGroup, and bossGroup
+        This will make it easier to make collison checks so the collison only checks the projectiles and not all the enemies which only 3 kinds of enemies can realy get near the player

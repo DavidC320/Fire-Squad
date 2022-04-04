@@ -34,8 +34,12 @@ class GamePlay:
         ####### End of game timers #######
 
         # Round timer
-        self.round_length = 60000  # 60000
+        self.round_length = 6000  # 60000
         self.round_start_time = 0
+
+        # Boss round timer
+        self.boss_round_length = 12000 #12000
+        self.boss_round_start_time = 0
 
         # Upgrade time timer
         self.upgrade_time_length = 5000
@@ -133,9 +137,9 @@ class GamePlay:
             else:
                 self.upgradeGroup.draw(self.display_surface)
                 if self.in_upgrade:
-                    self.upgradeGroup.update(False, False, False)
+                    self.upgradeGroup.update(False)
                 else:
-                    self.upgradeGroup.update(False, False, True)
+                    self.upgradeGroup.update(True)
 
             # Cursor
             self.cursor.update(self.mouse_position)
@@ -167,7 +171,10 @@ class GamePlay:
             self.text_write(f"rounds: {self.player.total_rounds()}", "black", (wn_width/2, 10), 1, "midtop")
 
             if self.in_round:
-                self.text_write(f"time: {int((self.current_time - self.round_start_time)/1000)}", "black", (wn_width/2, 60), 1, "midtop")
+                if self.round_is_boss:
+                    self.text_write(f"time limit: {int((self.current_time - self.boss_round_start_time)/1000)}/ {int(self.boss_round_length/1000)}", "black", (wn_width/2, 60), 1, "midtop")
+                else:
+                    self.text_write(f"time: {int((self.current_time - self.round_start_time)/1000)}", "black", (wn_width/2, 60), 1, "midtop")
             
             elif self.in_upgrade:
                 self.text_write(f"time: {int((self.current_time - self.upgrade_time_start_time)/1000)}", "black", (wn_width/2, 60), 1, "midtop")
@@ -244,12 +251,15 @@ class GamePlay:
                     self.can_fire = True
 
                 if self.in_round:  # round time
-                    if self.current_time - self.round_start_time > self.round_length:
-                        self.player.rounds += 1
-                        if self.player.rounds >= 5:
-                            self.player.rounds = 0
-                            self.player.boss_rounds += 1
-                            self.round_is_boss = True
+                    round_close = False
+                    if not self.round_is_boss:
+                        if self.current_time - self.round_start_time > self.round_length:
+                            round_close = True
+                    else:
+                        if self.current_time - self.boss_round_start_time > self.boss_round_length:
+                            round_close = True
+
+                    if round_close:
                         self.upgrade_time_start_time = pygame.time.get_ticks()
                         self.in_round = False
                         self.in_upgrade = True
@@ -267,11 +277,19 @@ class GamePlay:
 
                 else:
                     if self.current_time - self.down_time_start_time > self.down_time_length:  # down time
-                        self.round_start_time = pygame.time.get_ticks()
+                        self.player.rounds += 1
+                        if self.player.rounds >= 5:
+                            self.player.rounds = 0
+                            self.player.boss_rounds += 1
+                            self.round_is_boss = True
+                        else:
+                            self.round_is_boss = False
                         self.in_round = True
                         if self.round_is_boss:
+                            self.boss_round_start_time = pygame.time.get_ticks()
                             self.music_player.bossMusic_player()
                         else:
+                            self.round_start_time = pygame.time.get_ticks()
                             self.music_player.gameMusic_player()
                         self.upgradeGroup.empty()
 

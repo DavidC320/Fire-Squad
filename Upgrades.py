@@ -11,7 +11,7 @@ class BaseUpgrades(pygame.sprite.Sprite):
 
         self.display = display_screen
         # image
-        self.upgrade_image = pygame.image.load("GFX\\gui\\gameGui\\Upgrade\\Upgrade_test.png").convert_alpha()
+        self.upgrade_image = pygame.image.load("GFX\\gui\\gameGui\\Upgrade\\Upgrade.png").convert_alpha()
         self.image_size = self.upgrade_image.get_size()
 
         self.size_change = 2
@@ -76,8 +76,14 @@ class BaseUpgrades(pygame.sprite.Sprite):
         else:
             self.kill()
 
+    def icon_location(self):
+        midtop_pos = self.rect.midtop
+        distance = self.y - midtop_pos[1]
+        location = distance * 0.38
+        return location
+
     def text_write(self, text, color, pos, font_num):
-        self.font = pygame.font.Font(None, 50)
+        self.font = pygame.font.Font(None, 40)
         
         if font_num == 1:
             screen_text = self.font.render(text, True, color)
@@ -106,6 +112,8 @@ class HealthUpgrade(BaseUpgrades):
         self.rect = self.image.get_rect(center=(self.x, self.y))
 
         # icon
+        self.icon_copy = pygame.image.load("GFX\\gui\\gameGui\\Upgrade\\Health.png").convert_alpha()
+        self.icon = pygame.image.load("GFX\\gui\\gameGui\\Upgrade\\Health.png").convert_alpha()
 
         # text
         self.title_text = "Health"
@@ -135,7 +143,7 @@ class HealthUpgrade(BaseUpgrades):
                 self.player_data.health_lv += 1
                 self.state = "despawn"
 
-    def update(self, hovering, clicked, destroy):
+    def update(self, destroy):
         if destroy:
             self.state = "despawn"
 
@@ -152,8 +160,15 @@ class HealthUpgrade(BaseUpgrades):
             print("despawned")
             self.despawn()
         
-        self.text_write(self.title_text, "black", (self.x, self.y-100), 1)
-        self.text_write(str(self.price), "black", (self.x, self.y+55), 1)
+        self.text_write(self.title_text, "Grey", (self.x, self.y+25), 1)
+        self.text_write(str(self.price), "Grey", (self.x, self.y+55), 1)
+
+        location = self.icon_location()
+        
+        self.icon_rect = self.icon.get_rect(center=(self.x, self.y - location))  # this is really difficult to think of too keep this centerd on the target location
+        # Here is the problem, if I was to just use a midtop offset then the icon would be placed incorectly when the upgrade is scaled up. If I used the center then it would even be even more incorect when the upgrade scale.
+        # Here is my idea. I can use the midtop and center to create the position for the icon, center - mitop = value betweenn midtop and center then value / or * another value = to y location. completed.
+        self.display.blit(self.icon, self.icon_rect)
 
         self.rect = self.image.get_rect(center=(self.x, self.y))
 
@@ -176,6 +191,8 @@ class DamageUpgrade(BaseUpgrades):
         self.rect = self.image.get_rect(center=(self.x, self.y))
 
         # icon
+        self.icon_copy = pygame.image.load("GFX\\gui\\gameGui\\Upgrade\\Damage.png").convert_alpha()
+        self.icon = pygame.image.load("GFX\\gui\\gameGui\\Upgrade\\Damage.png").convert_alpha()
 
         # text
         self.title_text = "Damage"
@@ -205,7 +222,7 @@ class DamageUpgrade(BaseUpgrades):
                 self.player_data.damage_lv += 1
                 self.state = "despawn"
 
-    def update(self, hovering, clicked, destroy):
+    def update(self, destroy):
         if destroy:
             self.state = "despawn"
 
@@ -222,8 +239,14 @@ class DamageUpgrade(BaseUpgrades):
             print("despawned")
             self.despawn()
         
-        self.text_write(self.title_text, "black", (self.x, self.y-100), 1)
-        self.text_write(str(self.price), "black", (self.x, self.y+55), 1)
+        self.text_write(self.title_text, "grey", (self.x, self.y+25), 1)
+        self.text_write(str(self.price), "grey", (self.x, self.y+55), 1)
+
+        location = self.icon_location()
+        
+        self.icon_rect = self.icon.get_rect(center=(self.x, self.y - location))
+
+        self.display.blit(self.icon, self.icon_rect)
 
         self.rect = self.image.get_rect(center=(self.x, self.y))
 
@@ -246,6 +269,8 @@ class FirerateUpgrade(BaseUpgrades):
         self.rect = self.image.get_rect(center=(self.x, self.y))
 
         # icon
+        self.icon_copy = pygame.image.load("GFX\\gui\\gameGui\\Upgrade\\Firerate.png").convert_alpha()
+        self.icon = pygame.image.load("GFX\\gui\\gameGui\\Upgrade\\Firerate.png").convert_alpha()
 
         # text
         self.title_text = "Firerate"
@@ -279,7 +304,7 @@ class FirerateUpgrade(BaseUpgrades):
                 self.player_data.damage_lv += 1
                 self.state = "despawn"
 
-    def update(self, hovering, clicked, destroy):
+    def update(self, destroy):
         if destroy:
             self.state = "despawn"
 
@@ -296,7 +321,13 @@ class FirerateUpgrade(BaseUpgrades):
             print("despawned")
             self.despawn()
         
-        self.text_write(self.title_text, "black", (self.x, self.y-100), 1)
-        self.text_write(str(self.price), "black", (self.x, self.y+55), 1)
+        self.text_write(self.title_text, "grey", (self.x, self.y+25), 1)
+        self.text_write(str(self.price), "grey", (self.x, self.y+55), 1)
+
+        location = self.icon_location()
+        
+        self.icon_rect = self.icon.get_rect(center=(self.x, self.y - location))
+
+        self.display.blit(self.icon, self.icon_rect)
 
         self.rect = self.image.get_rect(center=(self.x, self.y))

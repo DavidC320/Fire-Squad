@@ -12,18 +12,31 @@ enemy_name = [
     #"holder"  #  spawns near z_max off screen// will fly away towards the center of the sceen and dissapear when z < 0
     ]
 
+boss_enemy_names = [
+    "seeker",  # acts like a chaser
+    "gatulus", # acts like a shooter
+    "tearer", # acts like a launcher
+    "Gazar" # creates a target retical and fires at the location
+
+]
+
 projectiles = [
     "bullet",
     "missle",
+    "laser",
+    "mlaser"
 ]
 
-# this will be used to check if the enemy is apart of the ranger classification
+# this will be used to check if the enemy is apart of the ranger classification // I think I need to remove this
 rangers = [
     "shooter",
-    "launcher"
+    "launcher",
+    "gatulus",
+    "tearer"
     ]
 fighters = [
-    "chaser"
+    "chaser",
+    "seeker"
     ]
 
 enemy_weight = [

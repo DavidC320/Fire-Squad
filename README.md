@@ -1,3 +1,3 @@
 "# Fire-Squad" 
-Current version 4.0.5
-working on upgrade menu
+Current version 4.1.0
+Starting to realy work on bosses
