@@ -79,3 +79,12 @@ other things I need to do.
     1. remove the shoot funtion from the game itself, this will be placed into the idiviual enemy
     2. create 3 enemy groups; enemygroup, projectileGroup, and bossGroup
         This will make it easier to make collison checks so the collison only checks the projectiles and not all the enemies which only 3 kinds of enemies can realy get near the player
+
+Progress:
+    started working on indvidual enemy classes
+
+completed:
+    enemy base class
+
+problems:
+    Currently their are no problems, the only thing that can become an issue is that the enemies needed a health equation to scale them to difficulty and rounds

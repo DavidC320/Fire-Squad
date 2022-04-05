@@ -4,6 +4,143 @@ from random import randrange
 from ToolBoxOfGarbage import point_getter
 from Settings import wn_width, wn_height, z_max, rangers
 
+# 4/4/2022
+class BaseEnemy(pygame.sprite.Sprite):
+    def __init__(self, display_surf):
+        super().__init__()
+        self.display_suface = display_surf
+
+    def enemy_movement_cont(self, move_lock):
+        speed = self.p_speed  # player speed
+        locks = move_lock
+        keys = pygame.key.get_pressed()
+        up = (keys[pygame.K_UP] or keys[pygame.K_w])
+        down = (keys[pygame.K_DOWN] or keys[pygame.K_s])
+        left = (keys[pygame.K_LEFT] or keys[pygame.K_a])
+        right = (keys[pygame.K_RIGHT] or keys[pygame.K_d])
+
+        if not locks[1] and up:
+            self.y += speed
+            if self.ship_type != "chaser":
+                self.tar_y += speed
+
+        if not locks[3] and down:
+            self.y -= speed
+            if self.ship_type != "chaser":
+                self.tar_y -= speed
+
+        if not locks[0] and left:
+            self.x += speed
+            if self.ship_type != "chaser":
+                self.tar_x += speed
+
+        if not locks[2] and right:
+            self.x -= speed
+            if self.ship_type != "chaser":
+                self.tar_x -= speed
+
+        if up or down or left or right:
+            self.moving = True
+            # print('yeah')
+        else:
+            self.moving = False
+            # print('no')
+
+        # print(f"{self.spawn_x} {self.spawn_y}")
+
+    def enemy_movement(self):
+        pos = [self.x, self.y]
+        # print((pos))
+        target_pos = [self.tar_x, self.tar_y]
+        # print(target_pos)
+        speed = self.e_speed
+
+        if self.moving:
+            speed = speed / 4
+            # print('woo')
+
+        pos_check = (target_pos[0] - self.e_speed < pos[0] < target_pos[0] + self.e_speed) and (
+                target_pos[1] - self.e_speed < pos[1] < target_pos[1] + self.e_speed)
+
+        self.pre_x = self.x
+        self.pre_y = self.y
+
+        if pos_check:
+            if self.ship_type == "chaser":
+                self.tar_x = wn_width/2
+                self.tar_y = wn_height/2
+            elif self.ship_type in rangers:
+                self.tar_x = randrange(0, wn_width)
+                self.tar_y = randrange(129, wn_height-74)
+
+
+        if not pos_check:
+            radians = math.atan2(self.tar_y - self.pre_y, self.tar_x - self.pre_x)
+
+            self.dir_x = math.cos(radians) * speed
+            self.dir_y = math.sin(radians) * speed
+
+            self.pre_x, self.pre_y = self.tar_x, self.tar_y
+            # print('Targeting')
+            self.x += self.dir_x
+            self.y += self.dir_y
+            # print('moving')
+
+        self.rect = self.image.get_rect(center=(int(self.x), int(self.y)))
+
+    def z_movement(self):  # controls the z value and size of the ship
+        if self.z < self.z_max:
+            self.z += self.z_speed
+        else:
+            if self.ship_type in rangers:
+                self.can_fire = True
+        self.image = pygame.transform.scale(self.ship_image, (int(self.image_size[0] * self.z), int(self.image_size[1] * self.z)))
+
+    def enemy_run(self, current_time):
+        if current_time - self.spawn_time > 20000:
+            self.kill()
+
+class Chaser(BaseEnemy):
+    def __init__(self, z_value, spawn_pos, enemy_speed, player_speed, display_surf, rounds, difficulty):
+        BaseEnemy.__init__(self, display_surf)
+        pygame.sprite.Sprite.__init__(self)
+
+        # General info
+        self.p_speed = player_speed
+        self.e_speed = enemy_speed
+        self.z_speed = .001 * self.e_speed
+        self.moving = False  # This checks if the player is moving
+        self.z_max = z_max
+
+        # Image
+        self.ship_image = pygame.image.load("GFX\\enemy\\Chaser.png").convert_alpha()
+
+        # Info
+        self.ship_type = "fighter"
+        self.state = "fighting"
+        # some equation to create health
+        self.health = 1
+        self.damage = 1
+        self.score_points = 150
+        self.credits = 10
+
+        # Location
+        self.x = spawn_pos[0]
+        self.y = spawn_pos[1]
+        self.z = z_value  # 0.05 // I can't remove this because I will need this in case I need to place an enemy on a diffent z location
+
+        # Block of variables from B3
+        # Target location
+        self.tar_x = wn_width/2  # B3 equivalent - mx
+        self.tar_y = wn_height/2  # B3 equivalent - my
+        # Previous location
+        self.pre_x = self.x  # B3 equivalent - pmx
+        self.pre_y = self.x  # B3 equivalent - pmy
+        # Directional value
+        self.dir_x = 0  # B3 equivalent - dx
+        self.dir_y = 0  # B3 equivalent - dx
+
+
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, ship_type, z_value, spawn_pos, enemy_speed, player_speed , spawn_time):
