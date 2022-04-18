@@ -160,7 +160,3 @@ K3 = buildwithpython
 4/1/2022
 L1 = sloth
     https://stackoverflow.com/questions/35721890/pygame-image-scale-does-not-work-as-expected
-
-4/11/2022
-M1 = freeCodeCamp.org / Programming with Mosh
-    https://youtu.be/byHcYRpMgI4

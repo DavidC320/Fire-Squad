@@ -23,7 +23,7 @@ class FireSquad:
         # game state classes
         self.mus = MusicCont()
         self.g = GamePlay(self.screen, self.clock, player_info)  # the actual game
-        self.go = GameOver(self.screen, self.clock, self)
+        self.go = GameOver(self.screen, self.clock, self, player_info)
         self.m = MainMenu(self.screen, self.clock, self)
         self.s = GameSelectMenu(self.screen, self.clock, self)
 

@@ -22,3 +22,7 @@ player_index
 
 4/13/2022
     make more basic user funtions.
+    make the command promt easeir to see.
+
+4/18/2022
+        skip everythinga and start working on the tkinter version

@@ -9,6 +9,7 @@ class Player_info:
         self.credits = 0
         self.rounds = 1
         self.boss_rounds = 0
+        self.dif = None
 
         # upgrade levels
         self.damage_lv = 1

@@ -127,6 +127,7 @@ class GamePlay:
     def play(self):
         self.down_time_start_time = pygame.time.get_ticks()
         self.running = True
+        self.player.dif = self.difficulty
         while self.running:
             self.check_events()
 

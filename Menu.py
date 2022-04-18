@@ -264,8 +264,9 @@ class GameSelectMenu(Menu):
 
 
 class GameOver(Menu):
-    def __init__(self, surface, clock, class_ob):
+    def __init__(self, surface, clock, class_ob, player_data):
         Menu.__init__(self, surface, clock)
+        self.player = player_data
         self.data_ob = class_ob
 
         # default state
@@ -325,3 +326,7 @@ class GameOver(Menu):
             elif self.state == 'quit':
                 self.data_ob.playing = False
             self.run_display = False
+            name = self.player.name
+            score = self.player.score
+            dif = self.player.score
+
