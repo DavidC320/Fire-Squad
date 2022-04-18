@@ -1,0 +1,24 @@
+FireSquad data manager
+started on 4/11/2022
+
+Info for this section of the project.
+This program is used to display and manage data created by the FireSquad program.
+The main reason this exists is just to make a leader board for the game, though it would look pretty cool to have a manager that can look at a bunch of things.
+
+Tables
+score_board
+        id INTEGER PRIMARY KEY
+        name TEXT
+        difficulty INTEGER
+        enemies_killed INTEGER
+        total_credits INTEGER
+        score INTEGER
+
+Planned Tables
+
+player_index
+        id INTEGER PRIMARY KEY
+        name TEXT
+
+4/13/2022
+    make more basic user funtions.

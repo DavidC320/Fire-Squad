@@ -1,7 +1,5 @@
 # created on 3/17/2022
 from msilib.schema import Upgrade
-from matplotlib.pyplot import text
-from numpy import can_cast, imag
 import pygame
 from Settings import wn_height, wn_width
 

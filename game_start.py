@@ -4,7 +4,7 @@ from Game import GamePlay
 from Music import MusicCont
 from Menu import MainMenu, GameSelectMenu, GameOver
 from Player import Player_info
-# Version Beta 4.1.1
+# Version Beta 4.1.2
 # David Cruz
 
 

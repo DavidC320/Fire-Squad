@@ -38,7 +38,7 @@ class GamePlay:
         self.round_start_time = 0
 
         # Boss round timer
-        self.boss_round_length = 12000 #12000
+        self.boss_round_length = 120000 #120000
         self.boss_round_start_time = 0
 
         # Upgrade time timer
@@ -106,11 +106,23 @@ class GamePlay:
         # Fonts // code taken from C1
         self.font = pygame.font.Font(None, 50)
         self.score_font = pygame.font.Font(None, 35)
+        self.boss_font = pygame.font.Font(None, 35)
 
         # Text
         # Warning text
         self.warning_surface = self.font.render('WARNING!', True, 'Yellow')
         self.warning_rect = self.warning_surface.get_rect(center=(wn_width / 2, wn_height / 1.2))
+
+    def osco_color(self, rgb_color, mode, minimum, max):
+        rgb = rgb_color
+        if mode == 1:  # red
+            None
+        elif mode == 2:  #green
+            None
+        elif mode == 3:  #blue
+            None
+        else:
+            print("something is wrong")
         
     def play(self):
         self.down_time_start_time = pygame.time.get_ticks()
@@ -172,7 +184,7 @@ class GamePlay:
 
             if self.in_round:
                 if self.round_is_boss:
-                    self.text_write(f"time limit: {int((self.current_time - self.boss_round_start_time)/1000)}/ {int(self.boss_round_length/1000)}", "black", (wn_width/2, 60), 1, "midtop")
+                    self.text_write(f"time limit: {int((self.current_time - self.boss_round_start_time)/1000)}/ {int(self.boss_round_length/1000)}", "black", (wn_width/2, 60), 3, "midtop")
                 else:
                     self.text_write(f"time: {int((self.current_time - self.round_start_time)/1000)}", "black", (wn_width/2, 60), 1, "midtop")
             
@@ -198,8 +210,10 @@ class GamePlay:
         # font options
         if font_num == 1:
             screen_text = self.font.render(text, True, color)
-        else:
+        elif font_num == 2:
             screen_text = self.score_font.render(text, True, color)
+        else:
+            screen_text = self.boss_font.render(text, True, color)
 
         # rect options
         if ren_point == "midtop":
@@ -254,9 +268,11 @@ class GamePlay:
                     round_close = False
                     if not self.round_is_boss:
                         if self.current_time - self.round_start_time > self.round_length:
+                            print("normal round")
                             round_close = True
                     else:
                         if self.current_time - self.boss_round_start_time > self.boss_round_length:
+                            print("boss round")
                             round_close = True
 
                     if round_close:
@@ -272,11 +288,6 @@ class GamePlay:
 
                 elif self.in_upgrade:
                     if self.current_time - self.upgrade_time_start_time > self.upgrade_time_length:  # upgrade time
-                        self.down_time_start_time = pygame.time.get_ticks()
-                        self.in_upgrade = False
-
-                else:
-                    if self.current_time - self.down_time_start_time > self.down_time_length:  # down time
                         self.player.rounds += 1
                         if self.player.rounds >= 5:
                             self.player.rounds = 0
@@ -284,6 +295,11 @@ class GamePlay:
                             self.round_is_boss = True
                         else:
                             self.round_is_boss = False
+                        self.down_time_start_time = pygame.time.get_ticks()
+                        self.in_upgrade = False
+
+                else:
+                    if self.current_time - self.down_time_start_time > self.down_time_length:  # down time
                         self.in_round = True
                         if self.round_is_boss:
                             self.boss_round_start_time = pygame.time.get_ticks()
