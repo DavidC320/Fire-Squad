@@ -88,3 +88,6 @@ completed:
 
 problems:
     Currently their are no problems, the only thing that can become an issue is that the enemies needed a health equation to scale them to difficulty and rounds
+
+4/21/2022
+back for a bit just thinking of a company name uh... nail box good enough

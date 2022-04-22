@@ -1,12 +1,13 @@
+from ast import Delete
 from msilib.schema import tables
 from re import T
 import sqlite3
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, font, messagebox
 import sqlite3
 # 4/11/2022
 # FireSquad database manager
-# Alpha 0.1.0
+# Alpha 0.1.1
 # db_credits
 # based off of A1
 
@@ -28,85 +29,19 @@ class Database_manager:
         name TEXT,
         score INTEGER,
         difficulty INTEGER
+        fake Integer
         )
         """
         # exicutes SQL commands
-        # self.c.execute()
+        #self.c.execute("""Alter Table scores add fake Integer bit default 0""")
+        #self.c.execute("""Alter Table scores add hidden Integer bit default 0""")
 
         # actually gets the data
         # self.c.fetchone()
         # self.c.fetchmany(3)
-        # self.c.fetchall()
+        #self.c.fetchall()
 
-    def command_prompt(self):
-        first_time = True
-        running = True
-        while running:
-            if first_time:
-                action = input("Welcome to the FireSquad database manager.\nfor help inter help.: ")
-                first_time = False
-                print(" ")
-            else:
-                action = input("For help enter help.: ")
-
-            ########################################## actions ##########################################
-
-            ###################################### basic commands ######################################
-            # help action
-            if action == "help":
-                print("""This is alpha 0.0.2 of the database manager.
-
-                database commands:
-                all scores - returns ecery record in the scores table
-                
-                Commands:
-                admin - test if your admin
-                data connected - test if there is data connected
-                exit - exit program""")
-
-            elif action == "thanks":
-                print("Your welcome")
-
-            elif action == "Pineapple":
-                print("Okay... ._.")
-
-            # exit action
-            elif action == "exit":
-                print("bye")
-                running = False
-
-            # data connection test
-            elif action == "data connected":
-                if self.data:
-                    print("data is connected.")
-                else:
-                    print("data is not connected.")
-
-            # admin check test
-            elif action == "admin":
-                if self.data:
-                    print("you are admin.")
-                else:
-                    print("you are not admin.")
-
-            ##################################### database commands #####################################
-
-            # select all from score table
-            elif action == "all scores":
-                self.c.execute('select * from scores')
-
-                text = (self.c.fetchall())
-                print(f"Here is everything in the scores table\n{text}")
-
-                self.commit_close()
-
-
-            ######################################## debug error ########################################
-
-            # error thing
-            else:
-                print("This is not a command.\nThe command might not be implemented or exists.")
-            print(" ")
+        #self.commit_close()
 
     def select_all(self, table):
         self.c.execute(f'select * from {table}')
@@ -114,14 +49,21 @@ class Database_manager:
         self.commit_close()
         return data
 
-    def record_data(self, table, table_contents, recorded_data):
-        self.c.execute(f'insert into {table} ({table_contents}) values ({recorded_data});')
+    def select_num_order(self, table, order_by, number):
+        self.c.execute(f'select * from {table} order by {order_by} desc limit {number}')
+        data = self.c.fetchall()
+        self.commit_close()
+        return data
 
+    def record_data(self, table, table_contents, recorded_data):
+        # (score, difficulty)
+        self.c.execute(f'insert into {table} ({table_contents}) values ({recorded_data});')
         self.commit_close()
 
     def commit_close(self):
         self.conn.commit()
-        self.conn.close()
+        #self.conn.close()
+
 
 ################################## manger GUI ##################################
 class Welcome_screen:
@@ -131,35 +73,79 @@ class Welcome_screen:
         # window things
         self.root = root
         self.root.title("Fire Squad Manager")
+        self.Title = font.Font(size=20, weight= "bold")
+        self.big_text = font.Font(size=12)
 
         # frames
-        self.frame = Frame(self.root)
-        self.frame.grid(column=0, row=0)
+        self.master_frame = Frame(self.root, padx=10, pady=10).grid(column=0, row=0)
+
+        self.frame_title = Frame(self.master_frame, relief=RAISED, border=10)
+        self.frame_title.grid(column=0, row=0, pady=6)
+
+        self.frame = Frame(self.master_frame)
+        self.frame.grid(column=0, row=1)
 
         # Labels
-        Label(self.frame, anchor=CENTER, text="Welcome to the FS data manager" ).grid(column=0, row=1)
-        Label(self.frame, anchor=CENTER, text="Ver: 1.0").grid(column=0, row=2)
+        Label(self.frame_title, anchor=CENTER, text="Welcome to the FS data manager", font=self.Title ).grid(column=0, row=1)
+        Label(self.frame_title, text="Nail Box").grid(column=0, row=2)
+        Label(self.frame_title, anchor=CENTER, text="Ver: 1.0").grid(column=0, row=3)
         Label(self.frame, justify=CENTER,
-        text="In this manager you can manage the data collected from playing.").grid(column=0, row=3)
+        text="In this manager you can manage the data\ncollected from the game Fire Squad.", font=self.big_text).grid(column=0, row=3)
+        self.name = Entry(self.frame)
+
+        # radio buttons
+        # help from D2
+        themes = {
+            "Light theme" : "1",
+            "Dark theme" : "2",
+        }
+
+        self.v = StringVar(self.root, "1")
+
+        self.radio_frame = Frame(self.frame)
+        self.radio_frame.grid(column=0, row=4)
+
+        row_num = 0
+        for (text, value) in themes.items():
+            Radiobutton(self.radio_frame, text=text, variable=self.v, value = value).grid(column=0, row=row_num)
+            row_num += 1
 
         # Buttons
         self.cont_btn = Button(self.frame, text="continue", command=self.manage_mode)
-        self.cont_btn.grid(column=0, row=4)
+        self.cont_btn.grid(column=0, row=5)
 
     def manage_mode(self):
         new_window = Tk()
-        win2 = Manager(new_window)
+        num = self.v.get()
+        new_window.resizable(False, False)
+        win2 = Manager(new_window, int(num))
         self.root.destroy()
-        
         
 
 class Manager:
-    def __init__(self, root):
+    def __init__(self, root, theme):
         super().__init__()
         # window things
-        
         self.root = root
         self.root.title("Manager")
+
+        # code form D4
+        if theme == 1:
+            self.root.configure(bg="white")
+            frame_color = "white"
+            self.data_frame_color = "cyan"
+            title_text_color = "black"
+            self.default_color = "light grey"
+            """style = ttk.Style()
+            style.theme_create("Light mode")
+            style.theme_settings("Light mode",{})"""
+        else:
+            self.root.configure(bg="black")
+            frame_color = "black"
+            self.data_frame_color = "#3f66a6"
+            title_text_color = "white"
+            self.default_color = "#c9c9b7"
+
 
         # database connector
         self.data_manager = Database_manager(None)
@@ -171,7 +157,7 @@ class Manager:
         # tabs
         self.tabCont = ttk.Notebook(self.frame)
 
-        self.score_board = ttk.Frame(self.tabCont)
+        self.score_board = Frame(self.tabCont, bg=frame_color)
         self.score_board.grid(row=0, column=0)
 
         # add to tab controller
@@ -179,35 +165,148 @@ class Manager:
         self.tabCont.pack(expand=1, fill="both")
 
         ##################### score board #####################
+        
+        # fonts // code from C1
+        self.Title = font.Font(size=20, weight= "bold")
 
         # frames
         self.cont_panel = Frame(self.score_board, padx=10, pady=10, border=5, relief="groove", bg="grey")
         self.cont_panel.grid(column=0, row=2, padx=10)
 
-        self.data_disp = Frame(self.score_board, padx=10, pady=10, border=5, relief="raised", bg="cyan")
+        self.data_disp = Frame(self.score_board, padx=10, pady=10, border=5, relief="raised", bg=self.data_frame_color)
         self.data_disp.grid(column=1, row=2, padx=10)
 
         # labels
-        Label(self.score_board, text="Score Board", anchor=CENTER).grid(column=0, columnspan=2, row=0)
-        Label(self.cont_panel, text="Control Panel").grid(column=0,row=0)
-        Label(self.data_disp, text="Score Data").grid(column=0,row=0)
+        Label(self.score_board, text="Score Board", anchor=CENTER, font=self.Title, fg=title_text_color, bg=frame_color).grid(column=0, columnspan=2, row=0)
+        Label(self.cont_panel, text="Control Panel", bg="grey", font=self.Title).grid(column=0, row=0)
+        Label(self.data_disp, text="Score Data", bg=self.data_frame_color, font=self.Title).grid(column=0, row=0)
 
+        ############################################################################### data controller ###############################################################################
         # buttons // control panal only
 
+        # fake record recorder
+        # alot of help from C2
+        self.crt_rec = Frame(self.cont_panel, bg=self.default_color)
+        self.crt_rec.grid(column=0, row=1, pady=5)
+
+        Label(self.crt_rec, text="Create a fake Record", font=self.Title, border=4, relief=RAISED, bg=self.default_color).grid(column=0, columnspan=3, pady=6, row=0)
+        Label(self.crt_rec, text="Name", width=8, border=4, relief=RIDGE, bg=self.default_color).grid(column=0, row=1, padx=4)
+        Label(self.crt_rec, text="score", width=8, border=4, relief=RIDGE, bg=self.default_color).grid(column=1, row=1, padx=4)
+        Label(self.crt_rec, text="difficulty", width=8, border=4, relief=RIDGE, bg=self.default_color).grid(column=2, row=1, padx=4)
+
+        self.name_txt = StringVar()
+        self.name_txt.set("Null")
+        self.score_num = IntVar()
+        self.score_num.set(0)
+        self.diff_num = IntVar()
+        self.diff_num.set(0)
+
+        self.fk_name = Entry(self.crt_rec, textvariable=self.name_txt)
+        self.fk_score = Spinbox(self.crt_rec, textvariable=self.score_num, from_=0)
+        self.fk_difficulty = Spinbox(self.crt_rec, textvariable=self.diff_num, from_=0, to=4)
+
+        self.fk_name.grid(column=0 ,row=2)
+        self.fk_score.grid(column=1 ,row=2)
+        self.fk_difficulty.grid(column=2 ,row=2)
+
+        # lambda relarned form C3
+        self.insert_btn = Button(self.crt_rec, text="Insert fake record", command= lambda: self.insert_record(), bg=self.default_color)
+        self.insert_btn.grid(column=0, columnspan=3, row=3)
+
+        ############################################################################## data displayer ##############################################################################
         # data // data display only
-        scores = self.data_manager.select_all("scores")
-        if len(scores) <= 0:
-            Label(self.data_disp, text="There is no data in the table").grid(column=0, row=1)
+        self.build_data_table()
+
+    def insert_record(self):
+        can_record = True
+        print("ping")
+        name = self.fk_name.get()
+        score = self.fk_score.get()
+        if not score.isdigit():
+            print("score is not a integer")
+            can_record = False
         else:
-            Label(self.data_disp, text="Data Found").grid(column=0, row=1)
+            score = int(score)
+            if score < 0:
+                score = 0
+        difficulty = self.fk_difficulty.get()
+        if not difficulty.isdigit():
+            print("difficulty is not a integer")
+        else:
+            difficulty = int(difficulty)
+            if difficulty > 4:
+                difficulty = 4
+
+        if can_record:
+            print(f"'{name}', {score}, {difficulty}, 0")
+            self.data_manager.record_data("scores",("name, score, difficulty, fake"), (f"'{name}', {score}, {difficulty}, 0"))
+            self.refresh_data_capsul()
+
+    def refresh_data_capsul(self):
+        # frame clearer from D1
+        for item in self.data_capsul.winfo_children():
+            item.destroy()
+
+        for item in self.data_dltr.winfo_children():
+            item.destroy()
+
+        self.build_data_table()
+    
+    def build_data_table(self):
+        scores = self.data_manager.select_num_order("scores","score",10)
+        if len(scores) <= 0:
+            Label(self.data_disp, text="There is no data in the table", bg="Red", border=6, relief=RIDGE).grid(column=0, row=1, pady=5)
+        else:
+            Label(self.data_disp, text="Data Found", bg="green", border=6, relief=RIDGE).grid(column=0, row=1, pady=5)
+            # info for the data columns
+            self.data_info = Frame(self.data_disp, bg=self.data_frame_color, relief="groove", border=5, padx=5, pady=3)
+            self.data_info.grid(column=0, row=2)
+            # dataf from data base
+            self.data_capsul = Frame(self.data_disp, bg=self.data_frame_color, relief="groove", border=5, padx=5, pady=3)
+            self.data_capsul.grid(column=0, row=3)
+            # data deleter
+            self.data_dltr = Frame(self.data_disp, bg=self.data_frame_color, relief="groove", border=5, padx=5, pady=3)
+            self.data_dltr.grid(column=1, row=3)
+            Label(self.data_info, text="id", anchor=CENTER, width=8, height=2, border=4, relief=RAISED, bg=self.default_color).grid(column=0, row=0, padx=2)
+            Label(self.data_info, text="name", anchor=CENTER, width=8, height=2, border=4, relief=RAISED, bg=self.default_color).grid(column=1, row=0, padx=2)
+            Label(self.data_info, text="score", anchor=CENTER, width=8, height=2, border=4, relief=RAISED, bg=self.default_color).grid(column=2, row=0, padx=2)
+            Label(self.data_info, text="difficulty", anchor=CENTER, width=8, height=2, border=4, relief=RAISED, bg=self.default_color).grid(column=3, row=0, padx=2)
+            Label(self.data_info, text="is fake", anchor=CENTER, width=8, height=2, border=4, relief=RAISED, bg=self.default_color).grid(column=4, row=0, padx=2)
+            row_num = 1
+
+            for records in scores:
+                # record items
+                id = records[0]
+                print(id)
+                name = records[1]
+                score = records[2]
+                difficulty = records[3]
+                fake = records[4]
+                if fake == 0:
+                    fake = "Yes"
+                else:
+                    fake = "No"
+                Label(self.data_capsul, text=id, anchor=CENTER, width=8, height=2, border=4, relief=GROOVE, bg=self.default_color).grid(column=0, row=row_num, padx=2, pady=1)
+                Label(self.data_capsul, text=name, anchor=CENTER, width=8, height=2, border=4, relief=GROOVE, bg=self.default_color).grid(column=1, row=row_num, padx=2, pady=1)
+                Label(self.data_capsul, text=score, anchor=CENTER, width=8, height=2, border=4, relief=GROOVE, bg=self.default_color).grid(column=2, row=row_num, padx=2, pady=1)
+                Label(self.data_capsul, text=difficulty, anchor=CENTER, width=8, height=2, border=4, relief=GROOVE, bg=self.default_color).grid(column=3, row=row_num, padx=2, pady=1)
+                Label(self.data_capsul, text=fake, anchor=CENTER, width=8, height=2, border=4, relief=GROOVE, bg=self.default_color).grid(column=4, row=row_num, padx=2, pady=1)
+                # fix for button value resinment from D5
+                Button(self.data_dltr, text="DELETE", bg="Red", command= lambda id=id: self.delete_hide_record(id)).grid(column=0, row=row_num-1, pady=8)
+                row_num += 1
+
+    def delete_hide_record(self, id):
+        print(id)
+
 
 
         
     
-b = Database_manager(None)
-# b.command_prompt()
+#b = Database_manager(None)
 
-"""if __name__ == "__main__":
+if __name__ == "__main__":
     root = Tk()
     app = Welcome_screen(root)
-    root.mainloop()"""
+    # resize disabler from D3
+    root.resizable(False, False)
+    root.mainloop()

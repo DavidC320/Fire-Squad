@@ -7,3 +7,28 @@ A1 = freeCodeCamp.org / Programming with Mosh
 4/18/2022
 B1 - Python tutorial
     https://www.pythontutorial.net/tkinter/tkinter-object-oriented-window/
+
+4/20/2022
+C1 - Geeks for Geeks
+    https://www.geeksforgeeks.org/how-to-set-font-for-text-in-tkinter/
+
+C2 - Study tonight
+    https://www.studytonight.com/tkinter/python-tkinter-widgets
+
+C3 - tutorialspoint
+    https://www.tutorialspoint.com/tkinter-button-commands-with-lambda-in-python
+
+4/21/2022
+D1 - Minion Jim, Tom.Slick
+    https://stackoverflow.com/questions/15781802/python-tkinter-clearing-a-frame
+
+D@ - geeksforgeeks
+
+D3 - CodersLegacy
+    https://coderslegacy.com/python/problem-solving/disable-resizing-in-tkinter/
+
+D4 - CodersLegacy
+    https://coderslegacy.com/tkinter-ttk-themes/
+
+D5 - Martineau, mshidt
+    https://stackoverflow.com/questions/17677649/tkinter-assign-button-command-in-a-for-loop-with-lambda

@@ -1,0 +1,5 @@
+select * [table]
+where [argument]
+order [argument]
+limit [number]
+

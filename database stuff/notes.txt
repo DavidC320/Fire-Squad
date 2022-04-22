@@ -26,3 +26,12 @@ player_index
 
 4/18/2022
         skip everythinga and start working on the tkinter version
+
+4/20/2022
+        create fake record maker
+                create fake name (optinal)
+                create fake score
+                create fake difficulty
+                any record made with the fake maker is tagged as fake
+                // fake records will be used to set records to be placed into
+                the leader board or as a test for other things
