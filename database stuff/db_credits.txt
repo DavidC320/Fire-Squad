@@ -32,3 +32,7 @@ D4 - CodersLegacy
 
 D5 - Martineau, mshidt
     https://stackoverflow.com/questions/17677649/tkinter-assign-button-command-in-a-for-loop-with-lambda
+
+4/23/2022
+E1 - Alex Peters, Mat Gregory
+    https://stackoverflow.com/questions/111155/how-do-i-handle-the-window-close-event-in-tkinter

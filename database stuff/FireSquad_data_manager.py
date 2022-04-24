@@ -1,13 +1,15 @@
-from ast import Delete
+from ast import Delete, arguments
 from msilib.schema import tables
 from re import T
 import sqlite3
+from sre_compile import isstring
 from tkinter import *
 from tkinter import ttk, font, messagebox
 import sqlite3
+import tkinter
 # 4/11/2022
 # FireSquad database manager
-# Alpha 0.1.1
+# 0.2.0
 # db_credits
 # based off of A1
 
@@ -30,10 +32,11 @@ class Database_manager:
         score INTEGER,
         difficulty INTEGER
         fake Integer
+        hidden Integer
         )
         """
         # exicutes SQL commands
-        #self.c.execute("""Alter Table scores add fake Integer bit default 0""")
+        # self.c.execute("""Alter Table scores add fake Integer bit default 0""")
         #self.c.execute("""Alter Table scores add hidden Integer bit default 0""")
 
         # actually gets the data
@@ -41,7 +44,7 @@ class Database_manager:
         # self.c.fetchmany(3)
         #self.c.fetchall()
 
-        #self.commit_close()
+        self.commit_close()
 
     def select_all(self, table):
         self.c.execute(f'select * from {table}')
@@ -49,8 +52,12 @@ class Database_manager:
         self.commit_close()
         return data
 
-    def select_num_order(self, table, order_by, number):
-        self.c.execute(f'select * from {table} order by {order_by} desc limit {number}')
+    def select_num_order(self, table, order_by, number, has_args, arguments):
+        com = f'select * from {table} order by {order_by} desc limit {number}'
+        if has_args:
+            com = f'select * from {table} where {arguments} order by {order_by} desc limit {number}'
+        print(com)
+        self.c.execute(com)
         data = self.c.fetchall()
         self.commit_close()
         return data
@@ -60,24 +67,30 @@ class Database_manager:
         self.c.execute(f'insert into {table} ({table_contents}) values ({recorded_data});')
         self.commit_close()
 
+    def update_record(self, table, content, new_data, item_id):
+        if isstring(new_data):
+            self.c.execute(f'update {table} set {content} = "{new_data}" where id = {item_id}')
+        else:
+            self.c.execute(f'update {table} set {content} = {new_data} where id = {item_id}')
+        self.commit_close()
+
     def commit_close(self):
         self.conn.commit()
         #self.conn.close()
 
 
 ################################## manger GUI ##################################
-class Welcome_screen:
+class Welcome_screen(Tk):
     # code based on B1
-    def __init__(self, root):
+    def __init__(self):
         super().__init__()
         # window things
-        self.root = root
-        self.root.title("Fire Squad Manager")
+        self.title("Fire Squad Manager")
         self.Title = font.Font(size=20, weight= "bold")
         self.big_text = font.Font(size=12)
 
         # frames
-        self.master_frame = Frame(self.root, padx=10, pady=10).grid(column=0, row=0)
+        self.master_frame = Frame(self, padx=10, pady=10).grid(column=0, row=0)
 
         self.frame_title = Frame(self.master_frame, relief=RAISED, border=10)
         self.frame_title.grid(column=0, row=0, pady=6)
@@ -88,10 +101,13 @@ class Welcome_screen:
         # Labels
         Label(self.frame_title, anchor=CENTER, text="Welcome to the FS data manager", font=self.Title ).grid(column=0, row=1)
         Label(self.frame_title, text="Nail Box").grid(column=0, row=2)
-        Label(self.frame_title, anchor=CENTER, text="Ver: 1.0").grid(column=0, row=3)
+        Label(self.frame_title, anchor=CENTER, text="Ver: 2.0").grid(column=0, row=3)
         Label(self.frame, justify=CENTER,
         text="In this manager you can manage the data\ncollected from the game Fire Squad.", font=self.big_text).grid(column=0, row=3)
-        self.name = Entry(self.frame)
+
+        # Entry
+        self.text_var = StringVar(self, "user")
+        self.name = Entry(self.frame, textvariable=self.text_var).grid(column=0, row=5)
 
         # radio buttons
         # help from D2
@@ -100,7 +116,7 @@ class Welcome_screen:
             "Dark theme" : "2",
         }
 
-        self.v = StringVar(self.root, "1")
+        self.v = StringVar(self, "1")
 
         self.radio_frame = Frame(self.frame)
         self.radio_frame.grid(column=0, row=4)
@@ -112,26 +128,28 @@ class Welcome_screen:
 
         # Buttons
         self.cont_btn = Button(self.frame, text="continue", command=self.manage_mode)
-        self.cont_btn.grid(column=0, row=5)
+        self.cont_btn.grid(column=0, row=6)
 
     def manage_mode(self):
-        new_window = Tk()
         num = self.v.get()
+        name = self.text_var.get()
+        new_window = Manager(int(num), self, name)
         new_window.resizable(False, False)
-        win2 = Manager(new_window, int(num))
-        self.root.destroy()
+        self.withdraw()
         
 
-class Manager:
-    def __init__(self, root, theme):
+class Manager(Toplevel):
+    def __init__(self, theme, root, name):
         super().__init__()
         # window things
+        self.title(f" welcome to the Manager, {name}")
         self.root = root
-        self.root.title("Manager")
+        # taken from E1
+        self.protocol("WM_DELETE_WINDOW", self.close_aplication)
 
         # code form D4
         if theme == 1:
-            self.root.configure(bg="white")
+            self.configure(bg="white")
             frame_color = "white"
             self.data_frame_color = "cyan"
             title_text_color = "black"
@@ -140,7 +158,7 @@ class Manager:
             style.theme_create("Light mode")
             style.theme_settings("Light mode",{})"""
         else:
-            self.root.configure(bg="black")
+            self.configure(bg="black")
             frame_color = "black"
             self.data_frame_color = "#3f66a6"
             title_text_color = "white"
@@ -151,7 +169,7 @@ class Manager:
         self.data_manager = Database_manager(None)
 
         # frame
-        self.frame = Frame(self.root)
+        self.frame = Frame(self)
         self.frame.grid(column=0, row=0)
 
         # tabs
@@ -209,12 +227,81 @@ class Manager:
         self.fk_score.grid(column=1 ,row=2)
         self.fk_difficulty.grid(column=2 ,row=2)
 
-        # lambda relarned form C3
+         # lambda relarned form C3
         self.insert_btn = Button(self.crt_rec, text="Insert fake record", command= lambda: self.insert_record(), bg=self.default_color)
         self.insert_btn.grid(column=0, columnspan=3, row=3)
 
+        # filter
+        self.filter_frame = Frame(self.cont_panel, bg = self.default_color, padx=5)
+        self.filter_frame.grid(column=0, row=2, pady=5)
+
+        Label(self.filter_frame, text= "Filters", bg=self.default_color, font=self.title, border=4, relief=RAISED).grid(column=0, columnspan=3, row=0)
+        Label(self.filter_frame, text="Show deleted", bg=self.default_color, border=4, relief=RIDGE, width=10).grid(column=0, row=1, padx=5)
+        Label(self.filter_frame, text="Show fake", bg=self.default_color, border=4, relief=RIDGE, width=10).grid(column=1, row=1, padx=5)
+        Label(self.filter_frame, text="difficulty", bg=self.default_color, border=4, relief=RIDGE, width=10).grid(column=2, row=1, padx=5)
+        show_dlt = {
+            "show deleted" : "0",
+            "hide deleted" : "1"
+        }
+        self.dlt_opt = StringVar(self, "1")
+
+        show_fak = {
+            "show fake" : "0",
+            "hide fake" : "1"
+        }
+        self.fak_opt = StringVar(self, "0")
+
+        diff_list ={
+            "0" : "0",
+            "1" : "1",
+            "2" : "2",
+            "3" : "3",
+            "4" : "4",
+            "all" : "5",
+        }
+        self.dif_opt = StringVar(self, "5")
+
+        dlt = Frame(self.filter_frame, bg = self.default_color)
+        dlt.grid(column=0, row=2)
+
+        row_num = 0
+        for (name, value) in show_dlt.items():
+            Radiobutton(dlt, text=name, variable=self.dlt_opt, value=value).grid(column=0, row=row_num)
+            row_num += 1
+
+        fke = Frame(self.filter_frame, bg = self.default_color)
+        fke.grid(column=1, row=2)
+
+        row_num = 0
+        for (name, value) in show_fak.items():
+            Radiobutton(fke, text=name, variable=self.fak_opt, value=value).grid(column=0, row=row_num)
+            row_num += 1
+
+        dif = Frame(self.filter_frame, bg = self.default_color)
+        dif.grid(column=2, row=2)
+
+        row_num = 0
+        for (name, value) in diff_list.items():
+            Radiobutton(dif, text=name, variable=self.dif_opt, value=value).grid(column=0, row=row_num)
+            row_num += 1
+
+        Button(self.filter_frame, text="refresh", command= lambda: self.refresh_data_capsul(), bg=self.default_color). grid(column=0, columnspan=3, row=3)
+
         ############################################################################## data displayer ##############################################################################
         # data // data display only
+        self.data_lab = Label(self.data_disp, border=6, relief=RIDGE)
+        self.data_lab.grid(column=0, row=1, pady=5)
+        
+        # info for the data columns
+        self.data_info = Frame(self.data_disp, bg=self.data_frame_color, relief="groove", border=5, padx=5, pady=3)
+        self.data_info.grid(column=0, row=2)
+        # dataf from data base
+        self.data_capsul = Frame(self.data_disp, bg=self.data_frame_color, relief="groove", border=5, padx=5, pady=3)
+        self.data_capsul.grid(column=0, row=3)
+        # data deleter
+        self.data_dltr = Frame(self.data_disp, bg=self.data_frame_color, relief="groove", border=5, padx=5, pady=3)
+        self.data_dltr.grid(column=1, row=3)
+
         self.build_data_table()
 
     def insert_record(self):
@@ -243,30 +330,24 @@ class Manager:
             self.refresh_data_capsul()
 
     def refresh_data_capsul(self):
-        # frame clearer from D1
-        for item in self.data_capsul.winfo_children():
-            item.destroy()
+        if self.has_data:
+            # frame clearer from D1
+            for item in self.data_capsul.winfo_children():
+                item.destroy()
 
-        for item in self.data_dltr.winfo_children():
-            item.destroy()
+            for item in self.data_dltr.winfo_children():
+                item.destroy()
 
         self.build_data_table()
     
     def build_data_table(self):
-        scores = self.data_manager.select_num_order("scores","score",10)
+        scores = self.filter_data()
         if len(scores) <= 0:
-            Label(self.data_disp, text="There is no data in the table", bg="Red", border=6, relief=RIDGE).grid(column=0, row=1, pady=5)
+            self.data_lab.config(text="There is no data in the table", bg="Red")
+            self.has_data = False
         else:
-            Label(self.data_disp, text="Data Found", bg="green", border=6, relief=RIDGE).grid(column=0, row=1, pady=5)
-            # info for the data columns
-            self.data_info = Frame(self.data_disp, bg=self.data_frame_color, relief="groove", border=5, padx=5, pady=3)
-            self.data_info.grid(column=0, row=2)
-            # dataf from data base
-            self.data_capsul = Frame(self.data_disp, bg=self.data_frame_color, relief="groove", border=5, padx=5, pady=3)
-            self.data_capsul.grid(column=0, row=3)
-            # data deleter
-            self.data_dltr = Frame(self.data_disp, bg=self.data_frame_color, relief="groove", border=5, padx=5, pady=3)
-            self.data_dltr.grid(column=1, row=3)
+            self.data_lab.config(text="Data Found", bg="green")
+            self.has_data = True
             Label(self.data_info, text="id", anchor=CENTER, width=8, height=2, border=4, relief=RAISED, bg=self.default_color).grid(column=0, row=0, padx=2)
             Label(self.data_info, text="name", anchor=CENTER, width=8, height=2, border=4, relief=RAISED, bg=self.default_color).grid(column=1, row=0, padx=2)
             Label(self.data_info, text="score", anchor=CENTER, width=8, height=2, border=4, relief=RAISED, bg=self.default_color).grid(column=2, row=0, padx=2)
@@ -277,11 +358,11 @@ class Manager:
             for records in scores:
                 # record items
                 id = records[0]
-                print(id)
                 name = records[1]
                 score = records[2]
                 difficulty = records[3]
                 fake = records[4]
+                hidden = records[5]
                 if fake == 0:
                     fake = "Yes"
                 else:
@@ -292,21 +373,73 @@ class Manager:
                 Label(self.data_capsul, text=difficulty, anchor=CENTER, width=8, height=2, border=4, relief=GROOVE, bg=self.default_color).grid(column=3, row=row_num, padx=2, pady=1)
                 Label(self.data_capsul, text=fake, anchor=CENTER, width=8, height=2, border=4, relief=GROOVE, bg=self.default_color).grid(column=4, row=row_num, padx=2, pady=1)
                 # fix for button value resinment from D5
-                Button(self.data_dltr, text="DELETE", bg="Red", command= lambda id=id: self.delete_hide_record(id)).grid(column=0, row=row_num-1, pady=8)
+                if hidden == 0:
+                    Button(self.data_dltr, text="DELETE", bg="Red", command= lambda id=id: self.delete_hide_record(id)).grid(column=0, row=row_num-1, pady=8)
+                else:
+                    Button(self.data_dltr, text="RETURN", bg="Green", command= lambda id=id: self.bring_unhide_record(id)).grid(column=0, row=row_num-1, pady=8)
                 row_num += 1
 
     def delete_hide_record(self, id):
-        print(id)
+        id = int(id)
+        response = messagebox.askquestion("Warning", f"you will be hiding the {id} record. Do you want to continue?")
+        if response == "yes":
+            self.data_manager.update_record("scores", "hidden", "1", id)
+            self.refresh_data_capsul()
+
+    def bring_unhide_record(self, id):
+        id = int(id)
+        response = messagebox.askquestion("Warning", f"you will be unhiding the {id} record. Do you want to continue?")
+        if response == "yes":
+            self.data_manager.update_record("scores", "hidden", "0", id)
+            self.refresh_data_capsul()
+
+    def close_aplication(self):
+        # taken from E1
+        if messagebox.askokcancel("Quit", "Do you want to quit?"):
+            self.root.destroy()
+      
+    def filter_data(self):
+        show_deleted = self.dlt_opt.get()
+        show_fake = self.fak_opt.get()
+        show_difficulty = self.dif_opt.get()
+        argument1 = ""
+        argument2 = ""
+        argument3 = ""
+        args = 0
+        has_args = False
+
+        if show_deleted == "1":  # if deleted should be hidden
+            print("ping1")
+            argument1 = "hidden = 0 "
+            args += 1
 
 
+        if show_fake == "1": # if fake should be hidden
+            print("ping2")
+            argument2 = "fake = 1"
+            if args > 0:
+                argument2 = "and fake = 1 "
+            args += 1
 
-        
+        if int(show_difficulty) < 5:
+            print("ping3")
+            argument3 = f"difficulty = {show_difficulty}"
+            if args > 0:
+                argument3 = f"and difficulty = {show_difficulty}"
+            args += 1
+
+        argument = f"{argument1}{argument2}{argument3}"
+        if args > 0:
+            print("ping4")
+            has_args = True
+        scores = self.data_manager.select_num_order("scores", "score", 10, has_args, argument)
+        return scores
+
     
 #b = Database_manager(None)
 
 if __name__ == "__main__":
-    root = Tk()
-    app = Welcome_screen(root)
+    app = Welcome_screen()
     # resize disabler from D3
-    root.resizable(False, False)
-    root.mainloop()
+    app.resizable(False, False)
+    app.mainloop()

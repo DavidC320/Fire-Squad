@@ -35,3 +35,54 @@ player_index
                 any record made with the fake maker is tagged as fake
                 // fake records will be used to set records to be placed into
                 the leader board or as a test for other things
+
+4/23/2022
+        Spent the day animating a satire skit for english.
+
+Problems
+        The program won't close when closing from the second screen. Fixed
+                The problem was that it was just closing the second screen instead of the main root. so to fix this problem I made the first class
+                send it's root into the second window class to allow it to close the main root.
+                
+Completed:
+        record maker
+        data displayer
+
+4/24/2022
+        Finished what I wanted so I'll come back some other time to make any nessacary changes
+
+Completed:
+        data filter - in manager
+        name entry - in welcome
+
+Problems
+        finding a way to dynamicly filter the records // Solved
+                The problem was that I would have 3 filters show hidden(deleted), show fake, and filter by difficulty. I needed a way to make sure
+                that the filters would work properly when selected.
+                1. create all the radio buttons and assign them to vars.
+                2. use the vars to check if the filter should be noted and ignored if it doesn't matter
+                        I.E. value 5 being all records, this can just be ignored since the SQL command has select * from scores
+                3. FIRST HURDLE: I needed to know what kind of filter is needed to make what comes out correct.
+                        a. I first used seperate arguments to do this.
+                                I.E. arg1 = "hidden" val1 = "0" or then converted to arg = "hidden = 0"
+                                but this wouldn't work nicely so I oppted to go fore arg1 = "hidden = 0" to free up space
+                        b.I need to know how many where being filtered so I added a number of arguments value to count how many needed to be acounted
+                        for when creating the final command line.
+                        c. I later ran into the problem where the command needed to know which filters where on. to fix this I thought up a quick
+                        and stupid solution where each if statment check if the number of arguments are greater than 0, and if so it would add and
+                        and to the begining of the command section
+                                I.E. arg1 = "column = value"
+                                        if argument_num > 0:
+                                        arg1 = "and column = value "
+                        D. I needed to change how the sql function in works.
+                                before I had it only work with one argument and would break if there was nothing for the where word.
+                                Now it just needs a command line and if there are any arguments.
+                                I.E. def select_num_order(self, table, order_by, number, has_args, arguments):
+                                        com = f'select * from {table} order by {order_by} desc limit {number}'
+                                        if has_args:
+                                        com = f'select * from {table} where {arguments} order by {order_by} desc limit {number}'
+                                        print(com)
+                                        self.c.execute(com)
+                                        data = self.c.fetchall()
+                                        self.commit_close()
+                                        return data
