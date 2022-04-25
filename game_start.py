@@ -4,7 +4,7 @@ from Game import GamePlay
 from Music import MusicCont
 from Menu import MainMenu, GameSelectMenu, GameOver
 from Player import Player_info
-# Version Beta 4.1.2
+# Version Beta 4.1.3
 # David Cruz
 
 
@@ -40,11 +40,11 @@ class FireSquad:
         while self.running:
             if self.playing:
                 if self.game:
-                    self.g.restart()
                     self.g.difficulty_set(self.difficulty)
                     self.game = self.g.play()
                 else:
-                    self.go.display_menu()
+                    self.go.display_menu()   
+                    self.g.restart()
             else:
                 if self.start:
                     self.s.display_menu()

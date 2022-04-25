@@ -1,26 +1,18 @@
-from ast import Delete, arguments
 from msilib.schema import tables
-from re import T
 import sqlite3
 from sre_compile import isstring
 from tkinter import *
 from tkinter import ttk, font, messagebox
-import sqlite3
-import tkinter
 # 4/11/2022
 # FireSquad database manager
-# 0.2.0
+# 0.2.2
 # db_credits
 # based off of A1
 
 class Database_manager:
-    def __init__(self, instance_database):
-        self.data = instance_database  # this data is from the game itself since that information can not be saved.
-        if self.data == None:
-            modify_data = False  # this will turn off the ability to create records.
-        None
+    def __init__(self):
 
-        self.conn = sqlite3.connect('database stuff//score_board.db')
+        self.conn = sqlite3.connect('database_stuff//score_board.db')
 
         # create cursor
         self.c = self.conn.cursor()
@@ -31,20 +23,20 @@ class Database_manager:
         name TEXT,
         score INTEGER,
         difficulty INTEGER
-        fake Integer
-        hidden Integer
+        fake Integer 0 false 1 true
+        hidden Integer 0 false 1 true
         )
         """
         # exicutes SQL commands
         # self.c.execute("""Alter Table scores add fake Integer bit default 0""")
-        #self.c.execute("""Alter Table scores add hidden Integer bit default 0""")
+        #self.c.execute("""update scores set fake = 1 where fake = 0""")
 
         # actually gets the data
         # self.c.fetchone()
         # self.c.fetchmany(3)
         #self.c.fetchall()
 
-        self.commit_close()
+        #self.commit_close()
 
     def select_all(self, table):
         self.c.execute(f'select * from {table}')
@@ -56,7 +48,6 @@ class Database_manager:
         com = f'select * from {table} order by {order_by} desc limit {number}'
         if has_args:
             com = f'select * from {table} where {arguments} order by {order_by} desc limit {number}'
-        print(com)
         self.c.execute(com)
         data = self.c.fetchall()
         self.commit_close()
@@ -166,7 +157,7 @@ class Manager(Toplevel):
 
 
         # database connector
-        self.data_manager = Database_manager(None)
+        self.data_manager = Database_manager()
 
         # frame
         self.frame = Frame(self)
@@ -326,7 +317,7 @@ class Manager(Toplevel):
 
         if can_record:
             print(f"'{name}', {score}, {difficulty}, 0")
-            self.data_manager.record_data("scores",("name, score, difficulty, fake"), (f"'{name}', {score}, {difficulty}, 0"))
+            self.data_manager.record_data("scores",("name, score, difficulty, fake, hidden"), (f"'{name}', {score}, {difficulty}, 0, 0"))
             self.refresh_data_capsul()
 
     def refresh_data_capsul(self):
@@ -363,7 +354,7 @@ class Manager(Toplevel):
                 difficulty = records[3]
                 fake = records[4]
                 hidden = records[5]
-                if fake == 0:
+                if fake == 1:
                     fake = "Yes"
                 else:
                     fake = "No"
@@ -375,7 +366,7 @@ class Manager(Toplevel):
                 # fix for button value resinment from D5
                 if hidden == 0:
                     Button(self.data_dltr, text="DELETE", bg="Red", command= lambda id=id: self.delete_hide_record(id)).grid(column=0, row=row_num-1, pady=8)
-                else:
+                elif hidden == 1:
                     Button(self.data_dltr, text="RETURN", bg="Green", command= lambda id=id: self.bring_unhide_record(id)).grid(column=0, row=row_num-1, pady=8)
                 row_num += 1
 
@@ -409,28 +400,24 @@ class Manager(Toplevel):
         has_args = False
 
         if show_deleted == "1":  # if deleted should be hidden
-            print("ping1")
-            argument1 = "hidden = 0 "
+            argument1 = "hidden = 0"
             args += 1
 
 
         if show_fake == "1": # if fake should be hidden
-            print("ping2")
-            argument2 = "fake = 1"
+            argument2 = "fake = 0"
             if args > 0:
-                argument2 = "and fake = 1 "
+                argument2 = "and fake = 0"
             args += 1
 
         if int(show_difficulty) < 5:
-            print("ping3")
             argument3 = f"difficulty = {show_difficulty}"
             if args > 0:
                 argument3 = f"and difficulty = {show_difficulty}"
             args += 1
 
-        argument = f"{argument1}{argument2}{argument3}"
+        argument = f"{argument1} {argument2} {argument3}"
         if args > 0:
-            print("ping4")
             has_args = True
         scores = self.data_manager.select_num_order("scores", "score", 10, has_args, argument)
         return scores

@@ -1,7 +1,10 @@
 # This will be used to create a centerlized spot for player information
+from database_stuff import FireSquad_data_manager
 
 class Player_info:
     def __init__(self):
+        self.sql_manager = FireSquad_data_manager.Database_manager()
+
         self.name = None
         self.health = None
         self.damage = 1
@@ -22,6 +25,13 @@ class Player_info:
         self.deaths = 0
 
     def reset_info(self):
+        if self.dif != None:
+            check1 = self.score > 0
+            check2 = self.rounds > 1
+            check3 = self.dif < 5 
+            if check1 and check2 and check3:
+                print("ping")
+                self.sql_manager.record_data("scores",("name, score, difficulty, fake, hidden"), (f"'{self.name}', {self.score}, {self.dif}, 0, 0"))
         self.score = 0
         self.credits = 0
         self.rounds = 1

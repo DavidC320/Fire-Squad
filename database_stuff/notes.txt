@@ -54,6 +54,7 @@ Completed:
 Completed:
         data filter - in manager
         name entry - in welcome
+        fixed some value issues where 1 was false and 0 was true
 
 Problems
         finding a way to dynamicly filter the records // Solved
@@ -86,3 +87,4 @@ Problems
                                         data = self.c.fetchall()
                                         self.commit_close()
                                         return data
+                        

@@ -34,7 +34,7 @@ class GamePlay:
         ####### End of game timers #######
 
         # Round timer
-        self.round_length = 6000  # 60000
+        self.round_length = 60000  # 60000
         self.round_start_time = 0
 
         # Boss round timer
